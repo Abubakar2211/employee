@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Employee;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+class EmployeeAuthController extends Controller
+{
+    public function login(Request $request)
+    {
+        $request->validate([
+            'employee_email' => 'required|email',
+            'employee_password' => 'required'
+        ]);
+
+        $employee = Employee::where('employee_email', $request->employee_email)->first();
+
+        if ($employee && Hash::check($request->employee_password, $employee->employee_password)) {
+            $request->session()->put('employee_id', $employee->employee_id);
+            $request->session()->put('employee_name', $employee->employee_name);
+            $request->session()->regenerate();
+            return redirect()->route('dashboard')->with('success', 'Employee logged in successfully');
+        }
+
+        return redirect()->back()->withErrors(['message' => 'Invalid  Credentials']);
+    }
+    public function logout(Request $request)
+    {
+        $request->session()->forget('employee_id');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login')->with('success', 'Logged out successfully.');
+    }
+
+}
