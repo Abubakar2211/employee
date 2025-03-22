@@ -22,62 +22,58 @@
                             <p class="mb-30">Update the employee data.</p>
                         </div>
                     </div>
-                    <form action="{{ route('employee.update',$employee->employee_id) }}" method="post">
-                        @csrf
-                        @method('put')
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Employee Code:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_code}}</p>
-                            </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Employee Code:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_code }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Name:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_name}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Name:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_name }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Email:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_email}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Email:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_email }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Number:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_number}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Number:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_number }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">CNIC:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_CNIC}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">CNIC:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_CNIC }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Date Of Birth:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_d_o_b}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Date Of Birth:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_d_o_b }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Date Of Join:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <p>{{$employee->employee_d_o_j}}</p>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Date Of Join:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <p>{{ $employee->employee_d_o_j }}</p>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Status:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <span class="badge {{ $employee->employee_status ? 'badge-success' : 'badge-danger' }}">
-                                    {{ $employee->employee_status ? 'Active' : 'Deactive' }}
-                                </span>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-md-2 col-form-label">Status:</label>
+                        <div class="col-sm-12 col-md-10">
+                            <span class="badge {{ $employee->employee_status ? 'badge-success' : 'badge-danger' }}">
+                                {{ $employee->employee_status ? 'Active' : 'Deactive' }}
+                            </span>
                         </div>
-                    </form>
+                    </div>
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('employee.index')}}" class="btn btn-primary">Back</a>
+                        <a href="{{ route('employee.index') }}" class="btn btn-primary">Back</a>
                     </div>
                 </div>
                 <!-- Default Basic Forms End -->

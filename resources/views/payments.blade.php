@@ -57,7 +57,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <a href="{{ route('employee.create') }}" class="btn btn-primary mx-2">Add Employee</a>
+                            <a href="{{ route('payment.create') }}" class="btn btn-primary mx-2">Add Employee</a>
                         </div>
                     </div>
                     <div class="pb-20">
@@ -66,33 +66,23 @@
                                 <thead>
                                     <tr>
                                         <th class="table-plus datatable-nosort">S.No</th>
-                                        <th>Employee Code</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Number</th>
-                                        <th>CNIC</th>
-                                        <th>Date Of Birth</th>
-                                        <th>Date Of Join</th>
-                                        <th>Status</th>
+                                        <th>Employee</th>
+                                        <th>Time</th>
+                                        <th>Payment Status</th>
                                         <th class="datatable-nosort">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php $i = 1; @endphp
-                                    @foreach ($employees as $employee)
+                                    @foreach ($payments as $payment)
                                         <tr>
                                             <td class="table-plus">{{ $i++ }}</td>
-                                            <td>{{ $employee->employee_code }}</td>
-                                            <td>{{ $employee->employee_name }}</td>
-                                            <td>{{ $employee->employee_email }}</td>
-                                            <td>{{ $employee->employee_number }}</td>
-                                            <td>{{ $employee->employee_CNIC }}</td>
-                                            <td>{{ $employee->employee_d_o_b }}</td>
-                                            <td>{{ $employee->employee_d_o_j }}</td>
+                                            <td>{{ $payment->employee_id }}</td>
+                                            <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
-                                                    class="badge {{ $employee->employee_status ? 'badge-success' : 'badge-danger' }}">
-                                                    {{ $employee->employee_status ? 'Active' : 'Deactive' }}
+                                                    class="badge {{ $payment->employee_status ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $payment->employee_status ? 'Active' : 'Deactive' }}
                                                 </span>
                                             </td>
                                             <td>
@@ -103,14 +93,14 @@
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                                                         <a class="dropdown-item"
-                                                            href="{{ route('employee.show', $employee->employee_id) }}"><i
+                                                            href="{{ route('payment.show', $payment->payment_id) }}"><i
                                                                 class="dw dw-eye"></i> View</a>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('employee.edit', $employee->employee_id) }}">
+                                                            href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
                                                         </a>
                                                         <form
-                                                            action="{{ route('employee.destroy', $employee->employee_id) }}"
+                                                            action="{{ route('payment.destroy', $payment->payment_id) }}"
                                                             method="post">
                                                             @csrf
                                                             @method('DELETE')

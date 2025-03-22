@@ -23,7 +23,24 @@ class EmployeeController extends Controller
         $allStatus = array_map(function ($status) use ($statusMap) {
             return $statusMap[$status] ?? 'Unknown';
         }, $allStatus);
-        return view('employees', compact('employees','allStatus'));
+        return view('employees', compact('employees', 'allStatus'));
+    }
+
+    public function getEmployeesByStatus(Request $request)
+    {
+        $status = $request->input('status');
+        $statusMap = [
+            "Active" => 1,
+            "Deactive" => 0,
+        ];
+        $statusValue = $statusMap[$status] ?? null;
+
+        if ($statusValue !== null) {
+            $employees = Employee::where('employee_status', $statusValue)->pluck('employee_name', 'employee_id');
+            return response()->json($employees);
+        }
+
+        return response()->json([]);
     }
 
     /**

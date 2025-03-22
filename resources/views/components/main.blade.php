@@ -53,7 +53,7 @@
         gtag('config', 'UA-119386393-1');
     </script>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 </head>
 
@@ -75,42 +75,6 @@
         <div class="header-left">
             <div class="menu-icon dw dw-menu"></div>
             <div class="search-toggle-icon dw dw-search2" data-toggle="header_search"></div>
-            <div class="header-search">
-                <form>
-                    <div class="form-group mb-0">
-                        <i class="dw dw-search2 search-icon"></i>
-                        <input type="text" class="form-control search-input" placeholder="Search Here">
-                        <div class="dropdown">
-                            <a class="dropdown-toggle no-arrow" href="#" role="button" data-toggle="dropdown">
-                                <i class="ion-arrow-down-c"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="form-group row">
-                                    <label class="col-sm-12 col-md-2 col-form-label">From</label>
-                                    <div class="col-sm-12 col-md-10">
-                                        <input class="form-control form-control-sm form-control-line" type="text">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-12 col-md-2 col-form-label">To</label>
-                                    <div class="col-sm-12 col-md-10">
-                                        <input class="form-control form-control-sm form-control-line" type="text">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-12 col-md-2 col-form-label">Subject</label>
-                                    <div class="col-sm-12 col-md-10">
-                                        <input class="form-control form-control-sm form-control-line" type="text">
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <button class="btn btn-primary">Search</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
         <div class="header-right">
             <div class="dashboard-setting user-notification">
@@ -318,7 +282,7 @@
                             <span class="micon dw dw-house-1"></span><span class="mtext">Home</span>
                         </a>
                         <ul class="submenu">
-                            <li><a href="">Dashboard</a></li>
+                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -327,7 +291,7 @@
                         </a>
                         <ul class="submenu">
                             <li><a href="{{ route('employee.index') }}">All Employee</a></li>
-                            <li><a href="">Employee payment</a></li>
+                            <li><a href="{{ route('payment.index') }}">Employee payment</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -339,18 +303,60 @@
     @yield('main-section')
     <div>
         <div class="footer-wrap pd-20 mb-20 card-box ">
-            DeskApp - Bootstrap 4 Admin Template By <a href="https://github.com/dropways" target="_blank">Ankit
-                Hingarajiya</a>
+            @ CopyWrite
         </div>
     </div>
     </div>
     <!-- js -->
-
-
-
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Fix: Prevent Dropdown from Closing on Click -->
+    <script>
+        $(document).ready(function() {
+
+            //  ===== Get The Employee Name To Employee Status
+
+            $('#filter1').change(function() {
+                var status = $(this).val();
+                $('#filter2').html('<option value="">Names</option>');
+
+                $.ajax({
+                    url: '/get-employees-by-status',
+                    type: 'GET',
+                    data: {
+                        status: status
+                    },
+                    success: function(response) {
+                        $.each(response, function(employee_id, employee_name) {
+                            $('#filter2').append('<option value="' + employee_id +
+                                '">' + employee_name + '</option>');
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log('AJAX Error:', xhr.responseText);
+                    }
+                });
+            });
+
+            // ==== Resert Filter =====
+
+            $('#resertFilter').click(function() {
+                $('#filterForm')[0].reset();
+                $('#filer2').html('<option value="">Names</option>')
+            })
+
+            // ===== Employee Data Get =======
+
+            $('#filterForm').submit(function(event){
+                var selectEmployeeId = $('#filter2').val();
+                if(selectEmployeeId){
+                    $(this).attr('action','/employee/'+selectEmployeeId);
+                }else{
+                    event.preventDefault();
+                    alert('Please select an employee');
+                }
+            })
+        });
+    </script>
 
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
     <script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
