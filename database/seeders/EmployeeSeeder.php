@@ -15,7 +15,7 @@ class EmployeeSeeder extends Seeder
     public function run(): void
     {
         Employee::create([
-            'employee_code' => 125 ,
+            'employee_code' => '00001' ,
             'employee_name' => 'Admin',
             'employee_email' => 'Admin@gmail.com',
             'employee_password' => Hash::make('Admin123@'),

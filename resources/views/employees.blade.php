@@ -32,14 +32,13 @@
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filters
                                 </button>
-                                <div class="dropdown-menu p-3 keep-open" aria-labelledby="filterDropdown"
-                                    style="width: 250px;">
+                                <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 250px;">
                                     <!-- First Select Field -->
                                     <label for="filter1">Filter 1</label>
                                     <select class="form-control mb-2" id="filter1" name="filter1">
-                                        <option value="">Select Filter 1</option>
-                                        <option value="option1">Option 1</option>
-                                        <option value="option2">Option 2</option>
+                                        @foreach ($allStatus as $status)
+                                            <option value="{{ $status }}">{{ $status }}</option>
+                                        @endforeach
                                     </select>
 
                                     <!-- Second Select Field -->
@@ -60,10 +59,21 @@
 
                             <!-- Fix: Prevent Dropdown from Closing on Click -->
                             <script>
-                                $(document).on('click', '.keep-open', function(event) {
-                                    event.stopPropagation(); // Prevent Bootstrap from closing the dropdown
+                                $(document).ready(function() {
+                                    // Prevent dropdown from closing when clicking inside
+                                    $('.dropdown-menu').on('click', function(event) {
+                                        event.stopPropagation();
+                                    });
+
+                                    // Optional: Close dropdown when clicking outside
+                                    $(document).on('click', function(event) {
+                                        if (!$(event.target).closest('.dropdown').length) {
+                                            $('.dropdown-menu').removeClass('show');
+                                        }
+                                    });
                                 });
                             </script>
+
                             <a href="{{ route('employee.create') }}" class="btn btn-primary mx-2">Add Employee</a>
                         </div>
                     </div>

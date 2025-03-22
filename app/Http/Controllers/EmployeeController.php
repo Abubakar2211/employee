@@ -15,7 +15,14 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::all();
-        $allStatus = Employee::pluck('employee_status')->all();
+        $allStatus = Employee::pluck('employee_status')->unique()->values()->all();
+        $statusMap = [
+            1 => "Active",
+            0 => "Deactive",
+        ];
+        $allStatus = array_map(function ($status) use ($statusMap) {
+            return $statusMap[$status] ?? 'Unknown';
+        }, $allStatus);
         return view('employees', compact('employees','allStatus'));
     }
 
@@ -24,7 +31,9 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return view('employee_create');
+        $latestEmployee = Employee::latest('employee_code')->first();
+        $employee_code = $latestEmployee ? sprintf('%05d', $latestEmployee->employee_code + 1) : '00001';
+        return view('employee_create',compact('employee_code'));
     }
 
     /**

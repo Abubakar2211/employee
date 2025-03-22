@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('employee_payment', function (Blueprint $table) {
             $table->bigIncrements('payment_id');
-            $table->foreignId('employee')->constrained();
+            $table->foreignId('employee_id')->constrained('employees', 'employee_id')->onDelete('cascade');
             $table->timestamp('date-time');
-            $table->timestamp('employee_status');
+            $table->boolean('employee_status');
             $table->timestamps();
         });
     }

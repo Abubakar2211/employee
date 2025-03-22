@@ -27,8 +27,8 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Employee Code:</label>
                             <div class="col-sm-12 col-md-10">
-                                <input class="form-control" type="text" name="employee_code"
-                                    placeholder="Enter Employee Code">
+                                <label for="employee_code">{{ $employee_code }}</label>
+                                <input class="form-control" type="hidden" name="employee_code" value="{{ $employee_code }}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -85,7 +85,7 @@
                                 <input type="checkbox" class="switch-btn" name="employee_status" value="1" data-color="#0099ff">
                             </div>
                         </div>
-                        
+
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-primary">Submit</button>
                         </div>
