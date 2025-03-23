@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_payment', function (Blueprint $table) {
             $table->bigIncrements('payment_id');
+            $table->string('payment');
             $table->foreignId('employee_id')->constrained('employees', 'employee_id')->onDelete('cascade');
             $table->timestamp('date_time');
             $table->boolean('employee_status');

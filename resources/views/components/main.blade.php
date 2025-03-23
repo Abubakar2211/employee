@@ -340,28 +340,8 @@
 
             //  ===== Get The Payment Name To Employee Status
 
-            $('#status_filter').change(function() {
-                var status = $(this).val();
-                $('#names_filter').html('<option value="">Names</option>');
 
-                $.ajax({
-                    url: '/get-payments-by-status',
-                    type: 'GET',
-                    data: {
-                        status: status
-                    },
-                    success: function(response) {
-                        $.each(response, function(employee_id, employee_name) {
-                            $('#names_filter').append('<option value="' + employee_id +
-                                '">' + employee_name + '</option>');
-                        });
-                    },
-                    error: function(xhr) {
-                        console.log('AJAX Error:', xhr.responseText);
-                    }
-                });
-            });
-            
+
             // ==== Resert Filter =====
 
             $('#resertFilter').click(function() {

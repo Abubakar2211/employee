@@ -42,6 +42,7 @@ class PaymentController extends Controller
     {
         $payment = $request->validate([
             'employee_id' => 'required',
+            'payment' => 'required',
             'date_time' => 'required',
             'employee_status' => 'boolean',
         ]);
@@ -58,30 +59,6 @@ class PaymentController extends Controller
         $payment = Payment::with('employee')->where('payment_id', $id)->first();
         return view('payment_show',compact('payment'));
     }
-
-    public function getPaymentsByStatus(Request $request)
-    {
-        $status = $request->input('status');
-        $statusMap = [
-            "Active" => 1,
-            "Deactive" => 0,
-        ];
-        $statusValue = $statusMap[$status] ?? null;
-
-        if ($statusValue !== null) {
-            $employees = Payment::with('employee')
-                ->where('employee_status', $statusValue)
-                ->join('employees', 'payments.employee_id', '=', 'employees.employee_id')
-                ->select('employees.employee_id', 'employees.employee_name')
-                ->get()
-                ->pluck('employee_name', 'employee_id');
-
-            return response()->json($employees);
-        }
-
-        return response()->json([]);
-    }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -101,6 +78,7 @@ class PaymentController extends Controller
 
         $validatedData = $request->validate([
             'date_time' => 'required',
+            'payment' => 'required',
             'employee_status' => 'boolean',
         ]);
 

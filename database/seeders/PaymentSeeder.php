@@ -16,6 +16,7 @@ class PaymentSeeder extends Seeder
     {
         Payment::create([
             'Employee_id' => 1,
+            'payment' => '10000',
             'date_time' => Now(),
             'employee_status' => 1
         ]);
