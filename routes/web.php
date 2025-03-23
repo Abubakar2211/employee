@@ -14,4 +14,5 @@ Route::middleware(['checkEmployee'])->group(function () {
     Route::resource('employee', EmployeeController::class);
     Route::resource('payment', PaymentController::class);
     Route::get('/get-employees-by-status', [EmployeeController::class, 'getEmployeesByStatus']);
+    Route::get('/get-payments-by-status', [PaymentController::class, 'getPaymentsByStatus']);
 });

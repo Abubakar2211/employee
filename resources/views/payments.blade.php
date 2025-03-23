@@ -3,20 +3,6 @@
     <div class="main-container">
         <div class="pd-ltr-20 xs-pd-20-10">
             <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="title">
-                        <h4>Form</h4>
-                    </div>
-                    <nav aria-label="breadcrumb" role="navigation">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('employee.index') }}">Employee</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Employee</li>
-                        </ol>
-                    </nav>
-                </div>
-
-
-
                 <!-- Simple Datatable start -->
                 <div class="card-box mb-30">
                     <div class="d-flex justify-content-between align-items-center pd-20">
@@ -32,11 +18,11 @@
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filters
                                 </button>
-                                <form id="filterForm">
+                                <form id="PaymentFilter">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
                                         <!-- First Select Field -->
                                         <label for="filter1">Select the Employee Status:</label>
-                                        <select class="form-control mb-2" id="filter1" name="filter1">
+                                        <select class="form-control mb-2" id="status_filter" name="status_filter">
                                             <option value="">Status</option>
                                             @foreach ($allStatus as $status)
                                                 <option value="{{ $status }}">{{ $status }}</option>
@@ -45,7 +31,7 @@
 
                                         <!-- Second Select Field -->
                                         <label for="filter2">Employees Status Names:</label>
-                                        <select class="form-control mb-3" id="filter2" name="filter2">
+                                        <select class="form-control mb-3" id="names_filter" name="names_filter">
                                             <option value="">Names</option>
                                         </select>
                                         <!-- Buttons -->
@@ -57,7 +43,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <a href="{{ route('payment.create') }}" class="btn btn-primary mx-2">Add Employee</a>
+                            <a href="{{ route('payment.create') }}" class="btn btn-primary mx-2">Add Payment </a>
                         </div>
                     </div>
                     <div class="pb-20">
@@ -77,7 +63,7 @@
                                     @foreach ($payments as $payment)
                                         <tr>
                                             <td class="table-plus">{{ $i++ }}</td>
-                                            <td>{{ $payment->employee_id }}</td>
+                                            <td>{{ $payment->employee->employee_name }}</td>
                                             <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
@@ -99,14 +85,14 @@
                                                             href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
                                                         </a>
-                                                        <form
+                                                        {{-- <form
                                                             action="{{ route('payment.destroy', $payment->payment_id) }}"
                                                             method="post">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button class="dropdown-item"><i class="dw dw-delete-3"></i>
                                                                 Delete</button>
-                                                        </form>
+                                                        </form> --}}
                                                     </div>
                                                 </div>
                                             </td>

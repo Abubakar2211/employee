@@ -71,7 +71,7 @@ class EmployeeController extends Controller
         ]);
         $employee['employee_password'] = Hash::make($request->employee_password);
         Employee::create($employee);
-        return redirect()->route('employee.index');
+        return redirect()->route('employee.index')->with('success','Employee Created Successfully.');
     }
 
     /**
