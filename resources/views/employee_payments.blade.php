@@ -25,9 +25,9 @@
                                         <select class="form-control mb-2" id="paymentStatusFilter"
                                             name="paymentStatusFilter">
                                             <option value="">Status</option>
-                                            @foreach ($allStatus as $status)
+                                            {{-- @foreach ($allStatus as $status)
                                                 <option value="{{ $status }}">{{ $status }}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
 
                                         <!-- Employee Name Filter -->
@@ -37,8 +37,6 @@
                                             <option value="">Names</option>
                                         </select>
 
-                                        <label for="payment_date">Payment Date:</label>
-                                        <input class="form-control date-picker mb-3" id="paymentEmployeeDate" name="payment_date" placeholder="Select Payment Date" type="text">
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
                                             <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
@@ -96,15 +94,6 @@
                                                             href="{{ route('payments', $payment->payment_id) }}">
                                                             <i class="dw dw-money"></i> All Payment
                                                         </a>
-                                                        {{-- <form
-                                                            action="{{ route('payment.destroy', $payment->payment_id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="dropdown-item"><i class="dw dw-delete-3"></i>
-                                                                Delete</button>
-                                                        </form> --}}
-                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

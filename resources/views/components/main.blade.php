@@ -266,7 +266,7 @@
 
     <div class="left-side-bar">
         <div class="brand-logo">
-            <a href="index.html">
+            <a href="/dashboard">
                 <img src="{{ asset('vendors/images/deskapp-logo.svg') }}" alt="" class="dark-logo">
                 <img src="{{ asset('vendors/images/deskapp-logo-white.svg') }}" alt="" class="light-logo">
             </a>
@@ -362,7 +362,74 @@
             })
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            // When status changes, load employees
+            $('#paymentStatusFilter').change(function() {
+                var status = $(this).val();
+                $('#paymentEmployeeFilter').html('<option value="">Loading...</option>');
 
+                $.ajax({
+                    url: '/get-employees-by-status',
+                    type: 'GET',
+                    data: {
+                        status: status
+                    },
+                    success: function(response) {
+                        $('#paymentEmployeeFilter').html(
+                            '<option value="">All Employees</option>');
+                        $.each(response, function(employee_id, employee_name) {
+                            $('#paymentEmployeeFilter').append('<option value="' +
+                                employee_id + '">' + employee_name + '</option>');
+                        });
+                    },
+                    error: function(xhr) {
+                        $('#paymentEmployeeFilter').html(
+                            '<option value="">Error loading names</option>');
+                        console.log('AJAX Error:', xhr.responseText);
+                    }
+                });
+            });
+
+            // When form is submitted, filter payments
+            $('#paymentFilterForm').submit(function(e) {
+                e.preventDefault();
+                var status = $('#paymentStatusFilter').val();
+                var employeeId = $('#paymentEmployeeFilter').val();
+                var paymentDate = $('#paymentEmployeeDate').val();
+
+                $.ajax({
+                    url: '/filter-payments',
+                    type: 'GET',
+                    data: {
+                        status: status,
+                        employee_id: employeeId,
+                        date_time: paymentDate
+                    },
+                    success: function(response) {
+                        if (response.success && response.payments.length > 0) {
+                            // Process and display payments
+                            displayPayments(response.payments);
+                        } else {
+                            $('#paymentResults').html(
+                                '<div class="alert alert-info">No payments found matching your criteria</div>'
+                                );
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#paymentResults').html(
+                            '<div class="alert alert-danger">Error loading payments</div>');
+                    }
+                });
+            });
+            // Reset filter
+            $('#resetPaymentFilter').click(function() {
+                $('#paymentStatusFilter').val('');
+                $('#paymentEmployeeFilter').html('<option value="">Names</option>');
+                $('#paymentResults').empty();
+            });
+        });
+    </script>
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
     <script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
     <script src="{{ asset('vendors/scripts/process.js') }}"></script>

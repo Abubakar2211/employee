@@ -3,17 +3,7 @@
     <div class="main-container">
         <div class="pd-ltr-20 xs-pd-20-10">
             <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="title">
-                        <h4>Form</h4>
-                    </div>
-                    <nav aria-label="breadcrumb" role="navigation">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('employee.index') }}">Employee</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Employee</li>
-                        </ol>
-                    </nav>
-                </div>
+
                 <!-- Default Basic Forms Start -->
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">

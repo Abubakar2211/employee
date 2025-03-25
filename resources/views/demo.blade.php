@@ -37,8 +37,6 @@
                                             <option value="">Names</option>
                                         </select>
 
-                                        <label for="payment_date">Payment Date:</label>
-                                        <input class="form-control date-picker mb-3" id="paymentEmployeeDate" name="payment_date" placeholder="Select Payment Date" type="text">
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
                                             <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
@@ -47,6 +45,11 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                <!-- Payment Results Table -->
+                                <div id="paymentResults" class="mt-3">
+                                    <!-- Results will be displayed here -->
+                                </div>
                             </div>
                             <a href="{{ route('payment.create') }}" class="btn btn-primary mx-2">Add Payment </a>
                         </div>
@@ -91,10 +94,6 @@
                                                         <a class="dropdown-item"
                                                             href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
-                                                        </a>
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('payments', $payment->payment_id) }}">
-                                                            <i class="dw dw-money"></i> All Payment
                                                         </a>
                                                         {{-- <form
                                                             action="{{ route('payment.destroy', $payment->payment_id) }}"
