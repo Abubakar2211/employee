@@ -68,7 +68,7 @@ class PaymentController extends Controller
         $payment = Payment::with('employee')->where('payment_id',$id)->first();
         return view('payment_edit',compact('payment'));
     }
-
+  
     /**
      * Update the specified resource in storage.
      */
@@ -141,12 +141,10 @@ class PaymentController extends Controller
 
     public function payments($paymentId)
     {
+        $payment = Payment::where('payment_id', $paymentId)->first();
         if (!$payment) {
             return 'Payment record not found';
         }
-
-        $payment = Payment::where('payment_id', $paymentId)->first();
-
         $employee = Employee::where('employee_id', $payment->employee_id)->first();
 
         $payments = Payment::where('employee_id', $employee->employee_id)->get();

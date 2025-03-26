@@ -36,9 +36,11 @@
                                             name="paymentEmployeeFilter">
                                             <option value="">Names</option>
                                         </select>
-
-                                        <label for="payment_date">Payment Date:</label>
-                                        <input class="form-control date-picker mb-3" id="paymentEmployeeDate" name="payment_date" placeholder="Select Payment Date" type="text">
+                                        <div>
+                                            <label for="payment_date">Payment Date:</label>
+                                            <input class="form-control month-picker mb-3" id="paymentEmployeeDate"
+                                                name="payment_date" placeholder="Select Payment Month" type="text">
+                                      </div>
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
                                             <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset

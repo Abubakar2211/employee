@@ -44,7 +44,7 @@
                             <div class="col-sm-12 col-md-10">
                                 <input type="hidden" name="employee_status" value="0">
                                 <input type="checkbox" class="switch-btn" name="employee_status" value="1"
-                                    data-color="#0099ff">
+                                    data-color="#0099ff" checked>
                             </div>
                         </div>
 

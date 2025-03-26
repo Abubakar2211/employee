@@ -24,7 +24,6 @@
                                         <!-- First Select Field -->
                                         <label for="filter1">Select the Employee Status:</label>
                                         <select class="form-control mb-2" id="filter1" name="filter1">
-                                            <option value="">Status</option>
                                             @foreach ($allStatus as $status)
                                                 <option value="{{ $status }}">{{ $status }}</option>
                                             @endforeach
@@ -33,7 +32,6 @@
                                         <!-- Second Select Field -->
                                         <label for="filter2">Employees Status Names:</label>
                                         <select class="form-control mb-3" id="filter2" name="filter2">
-                                            <option value="">Names</option>
                                         </select>
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">

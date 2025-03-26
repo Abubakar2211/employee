@@ -317,7 +317,6 @@
 
             $('#filter1').change(function() {
                 var status = $(this).val();
-                $('#filter2').html('<option value="">Names</option>');
 
                 $.ajax({
                     url: '/get-employees-by-status',

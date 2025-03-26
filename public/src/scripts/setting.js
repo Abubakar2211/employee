@@ -173,6 +173,13 @@ jQuery(document).ready(function(){
 		autoClose: true,
 		dateFormat: 'dd MM yyyy',
 	});
+    $('.month-picker').datepicker({
+        language: 'en',
+        autoClose: true,
+        minView: 'months',  // This restricts to month view
+        viewMode: 'months', // This starts in month view
+        dateFormat: 'MM yyyy', // This formats as "Month Year"
+    });
 	$('.datetimepicker').datepicker({
 		timepicker: true,
 		language: 'en',

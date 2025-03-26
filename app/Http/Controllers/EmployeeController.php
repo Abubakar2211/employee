@@ -39,7 +39,7 @@ class EmployeeController extends Controller
             $employees = Employee::where('employee_status', $statusValue)->pluck('employee_name', 'employee_id');
             return response()->json($employees);
         }
-
+            
         return response()->json([]);
     }
 
