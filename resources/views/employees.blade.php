@@ -28,15 +28,19 @@
                                                 <option value="{{ $status }}">{{ $status }}</option>
                                             @endforeach
                                         </select>
-
+                                
                                         <!-- Second Select Field -->
-                                        <label for="filter2">Employees Status Names:</label>
+                                        <label for="filter2">Employees Names:</label>
                                         <select class="form-control mb-3" id="filter2" name="filter2">
+                                            <option value="">All Employees</option>
+                                            @foreach ($allEmployees as $id => $name)
+                                                <option value="{{ $id }}">{{ $name }}</option>
+                                            @endforeach
                                         </select>
+                                        
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resertFilter" class="btn btn-secondary">Reset
-                                                Filter</button>
+                                            <button type="reset" id="resertFilter" class="btn btn-secondary">Reset Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>
@@ -87,9 +91,6 @@
                                                         <i class="dw dw-more"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('employee.show', $employee->employee_id) }}"><i
-                                                                class="dw dw-eye"></i> View</a>
                                                         <a class="dropdown-item"
                                                             href="{{ route('employee.edit', $employee->employee_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit

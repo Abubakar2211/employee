@@ -14,7 +14,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::with('employee')->latest()->get()->unique('employee_id');
+        $payments = Payment::where('employee_status',1)->with('employee')->latest()->get()->unique('employee_id');
         $allStatus = Payment::pluck('employee_status')->unique()->values()->all();
         $statusMap = [
             1 => "Active",
@@ -31,7 +31,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        $employees = Employee::select('employee_id','employee_name')->get();
+        $employees = Employee::where('employee_status',1)->select('employee_id','employee_name')->get();
         return view('payment_create',compact('employees'));
     }
 

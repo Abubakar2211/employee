@@ -12,35 +12,67 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // EmployeeController.php
+
     public function index()
     {
-        $employees = Employee::all();
-        $allStatus = Employee::pluck('employee_status')->unique()->values()->all();
-        $statusMap = [
-            1 => "Active",
-            0 => "Deactive",
-        ];
-        $allStatus = array_map(function ($status) use ($statusMap) {
-            return $statusMap[$status] ?? 'Unknown';
-        }, $allStatus);
-        return view('employees', compact('employees', 'allStatus'));
-    }
+        $employees = Employee::where('employee_status', 1)->get();
+        $allStatus = ['Active', 'Deactive', 'All'];
 
+        $allEmployees = Employee::pluck('employee_name', 'employee_id');
+
+        return view('employees', compact('employees', 'allStatus', 'allEmployees'));
+    }
+    public function filterEmployees(Request $request)
+    {
+        $status = $request->input('status');
+        $employeeId = $request->input('employee_id');
+
+        $query = Employee::query();
+
+        if ($status && $status !== 'All') {
+            $statusMap = [
+                "Active" => 1,
+                "Deactive" => 0,
+            ];
+            $statusValue = $statusMap[$status] ?? null;
+
+            if ($statusValue !== null) {
+                $query->where('employee_status', $statusValue);
+            }
+        }
+
+        if ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        }
+
+        $employees = $query->get();
+
+        return response()->json($employees);
+    }
     public function getEmployeesByStatus(Request $request)
     {
         $status = $request->input('status');
-        $statusMap = [
-            "Active" => 1,
-            "Deactive" => 0,
-        ];
-        $statusValue = $statusMap[$status] ?? null;
 
-        if ($statusValue !== null) {
-            $employees = Employee::where('employee_status', $statusValue)->pluck('employee_name', 'employee_id');
-            return response()->json($employees);
+        if ($status === 'All') {
+            $employees = Employee::pluck('employee_name', 'employee_id');
+        } else {
+            $statusMap = [
+                "Active" => 1,
+                "Deactive" => 0,
+            ];
+            $statusValue = $statusMap[$status] ?? null;
+
+            if ($statusValue !== null) {
+                $employees = Employee::where('employee_status', $statusValue)
+                    ->pluck('employee_name', 'employee_id');
+            } else {
+                $employees = [];
+            }
         }
-            
-        return response()->json([]);
+
+        return response()->json($employees);
     }
 
     /**
@@ -50,7 +82,7 @@ class EmployeeController extends Controller
     {
         $latestEmployee = Employee::latest('employee_code')->first();
         $employee_code = $latestEmployee ? sprintf('%05d', $latestEmployee->employee_code + 1) : '00001';
-        return view('employee_create',compact('employee_code'));
+        return view('employee_create', compact('employee_code'));
     }
 
     /**
@@ -71,7 +103,7 @@ class EmployeeController extends Controller
         ]);
         $employee['employee_password'] = Hash::make($request->employee_password);
         Employee::create($employee);
-        return redirect()->route('employee.index')->with('success','Employee Created Successfully.');
+        return redirect()->route('employee.index')->with('success', 'Employee Created Successfully.');
     }
 
     /**
@@ -79,8 +111,8 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $employee = Employee::findOrFail($id);
-        return view('employee_show',compact('employee'));
+        // $employee = Employee::findOrFail($id);
+        // return view('employee_show',compact('employee'));
     }
 
     /**

@@ -318,17 +318,45 @@
             $('#filter1').change(function() {
                 var status = $(this).val();
 
+                // Clear previous options
+                $('#filter2').empty().append('<option value="">Select Employee</option>');
+
+                if (status) {
+                    $.ajax({
+                        url: '/get-employees-by-status',
+                        type: 'GET',
+                        data: {
+                            status: status
+                        },
+                        success: function(response) {
+                            $.each(response, function(employee_id, employee_name) {
+                                $('#filter2').append('<option value="' + employee_id +
+                                    '">' + employee_name + '</option>');
+                            });
+                        },
+                        error: function(xhr) {
+                            console.log('AJAX Error:', xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Form submission handler
+            $('#filterForm').submit(function(e) {
+                e.preventDefault();
+
+                var status = $('#filter1').val();
+                var employeeId = $('#filter2').val();
+
                 $.ajax({
-                    url: '/get-employees-by-status',
+                    url: '/filter-employees',
                     type: 'GET',
                     data: {
-                        status: status
+                        status: status,
+                        employee_id: employeeId
                     },
                     success: function(response) {
-                        $.each(response, function(employee_id, employee_name) {
-                            $('#filter2').append('<option value="' + employee_id +
-                                '">' + employee_name + '</option>');
-                        });
+                        updateTable(response);
                     },
                     error: function(xhr) {
                         console.log('AJAX Error:', xhr.responseText);
@@ -336,10 +364,43 @@
                 });
             });
 
+            function updateTable(employees) {
+                var tbody = $('tbody');
+                tbody.empty();
 
-            //  ===== Get The Payment Name To Employee Status
+                $.each(employees, function(i, employee) {
+                    var row = '<tr>' +
+                        '<td class="table-plus">' + (i + 1) + '</td>' +
+                        '<td>' + employee.employee_code + '</td>' +
+                        '<td>' + employee.employee_name + '</td>' +
+                        '<td>' + employee.employee_email + '</td>' +
+                        '<td>' + employee.employee_number + '</td>' +
+                        '<td>' + employee.employee_CNIC + '</td>' +
+                        '<td>' + employee.employee_d_o_b + '</td>' +
+                        '<td>' + employee.employee_d_o_j + '</td>' +
+                        '<td><span class="badge ' + (employee.employee_status ? 'badge-success' :
+                            'badge-danger') + '">' +
+                        (employee.employee_status ? 'Active' : 'Deactive') + '</span></td>' +
+                        '<td><div class="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
+                        '<i class="dw dw-more"></i>' +
+                        '</a>' +
+                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                        '<a class="dropdown-item" href="/employee/' + employee.employee_id + '/edit">' +
+                        '<i class="dw dw-edit2"></i> Edit' +
+                        '</a>' +
+                        '<form action="/employee/' + employee.employee_id + '" method="post">' +
+                        '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                        '<input type="hidden" name="_method" value="DELETE">' +
+                        '<button class="dropdown-item"><i class="dw dw-delete-3"></i> Delete</button>' +
+                        '</form>' +
+                        '</div>' +
+                        '</div></td>' +
+                        '</tr>';
 
-
+                    tbody.append(row);
+                });
+            }
 
             // ==== Resert Filter =====
 
@@ -348,54 +409,25 @@
                 $('#filer2').html('<option value="">Names</option>')
             })
 
-            // ===== Employee Data Get =======
-
-            $('#filterForm').submit(function(event) {
-                var selectEmployeeId = $('#filter2').val();
-                if (selectEmployeeId) {
-                    $(this).attr('action', '/employee/' + selectEmployeeId);
-                } else {
-                    event.preventDefault();
-                    alert('Please select an employee');
-                }
-            })
         });
     </script>
     <script>
         $(document).ready(function() {
-            // When status changes, load employees
-            $('#paymentStatusFilter').change(function() {
-                var status = $(this).val();
-                $('#paymentEmployeeFilter').html('<option value="">Loading...</option>');
-
-                $.ajax({
-                    url: '/get-employees-by-status',
-                    type: 'GET',
-                    data: {
-                        status: status
-                    },
-                    success: function(response) {
-                        $('#paymentEmployeeFilter').html(
-                            '<option value="">All Employees</option>');
-                        $.each(response, function(employee_id, employee_name) {
-                            $('#paymentEmployeeFilter').append('<option value="' +
-                                employee_id + '">' + employee_name + '</option>');
-                        });
-                    },
-                    error: function(xhr) {
-                        $('#paymentEmployeeFilter').html(
-                            '<option value="">Error loading names</option>');
-                        console.log('AJAX Error:', xhr.responseText);
-                    }
-                });
+            // Initialize month picker
+            $('.month-picker').datepicker({
+                format: "MM yyyy",
+                viewMode: "months",
+                minViewMode: "months",
+                autoclose: true
             });
 
             // When form is submitted, filter payments
             $('#paymentFilterForm').submit(function(e) {
                 e.preventDefault();
+
                 var status = $('#paymentStatusFilter').val();
                 var employeeId = $('#paymentEmployeeFilter').val();
-                var paymentDate = $('#paymentEmployeeDate').val();
+                var paymentMonth = $('#paymentEmployeeDate').val();
 
                 $.ajax({
                     url: '/filter-payments',
@@ -403,30 +435,124 @@
                     data: {
                         status: status,
                         employee_id: employeeId,
-                        date_time: paymentDate
+                        date_time: paymentMonth
                     },
                     success: function(response) {
-                        if (response.success && response.payments.length > 0) {
-                            // Process and display payments
+                        if (response.success) {
                             displayPayments(response.payments);
-                        } else {
-                            $('#paymentResults').html(
-                                '<div class="alert alert-info">No payments found matching your criteria</div>'
-                                );
                         }
                     },
                     error: function(xhr) {
+                        console.log('AJAX Error:', xhr.responseText);
                         $('#paymentResults').html(
                             '<div class="alert alert-danger">Error loading payments</div>');
                     }
                 });
             });
+
             // Reset filter
-            $('#resetPaymentFilter').click(function() {
-                $('#paymentStatusFilter').val('');
-                $('#paymentEmployeeFilter').html('<option value="">Names</option>');
-                $('#paymentResults').empty();
+            $('#resetPaymentFilter').click(function(e) {
+                e.preventDefault();
+                $('#paymentFilterForm')[0].reset();
+                loadAllPayments();
             });
+
+            // Initial load
+            loadAllPayments();
+        });
+
+        function loadAllPayments() {
+            $.ajax({
+                url: '/filter-payments',
+                type: 'GET',
+                data: {
+                    status: 'All',
+                    employee_id: '',
+                    date_time: ''
+                },
+                success: function(response) {
+                    displayPayments(response.payments);
+                }
+            });
+        }
+
+        function displayPayments(payments) {
+            var tbody = $('#paymentsTableBody');
+            tbody.empty();
+
+            if (payments.length === 0) {
+                tbody.html('<tr><td colspan="6" class="text-center">No payments found</td></tr>');
+                return;
+            }
+
+            $.each(payments, function(i, payment) {
+                var statusClass = payment.employee.employee_status ? 'badge-success' : 'badge-danger';
+                var statusText = payment.employee.employee_status ? 'Active' : 'Deactive';
+
+                var row = '<tr id="paymentRow_' + payment.payment_id + '">' +
+                    '<td class="table-plus">' + (i + 1) + '</td>' +
+                    '<td>' + (payment.employee ? payment.employee.employee_name : 'N/A') + '</td>' +
+                    '<td>Rs: ' + payment.payment + '</td>' +
+                    '<td>' + payment.date_time + '</td>' +
+                    '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>' +
+                    '<td><div class="dropdown">' +
+                    '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
+                    '<i class="dw dw-more"></i>' +
+                    '</a>' +
+                    '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                    '<a class="dropdown-item" href="/payment/' + payment.payment_id + '">' +
+                    '<i class="dw dw-eye"></i> View' +
+                    '</a>' +
+                    '<a class="dropdown-item" href="/payment/' + payment.payment_id + '/edit">' +
+                    '<i class="dw dw-edit2"></i> Edit' +
+                    '</a>' +
+                    '<a class="dropdown-item" href="/employee/' + payment.employee_id + '/payments">' +
+                    '<i class="dw dw-money"></i> All Payments' +
+                    '</a>' +
+                    '</div>' +
+                    '</div></td>' +
+                    '</tr>';
+
+                tbody.append(row);
+            });
+        }
+        var tbody = $('tbody');
+        tbody.empty();
+
+        if (payments.length === 0) {
+            tbody.html('<tr><td colspan="6" class="text-center">No payments found</td></tr>');
+            return;
+        }
+
+        $.each(payments, function(i, payment) {
+            var row = '<tr>' +
+                '<td class="table-plus">' + (i + 1) + '</td>' +
+                '<td>' + (payment.employee ? payment.employee.employee_name : 'N/A') + '</td>' +
+                '<td>Rs: ' + payment.payment + '</td>' +
+                '<td>' + payment.date_time + '</td>' +
+                '<td><span class="badge ' +
+                (payment.employee && payment.employee.employee_status ? 'badge-success' : 'badge-danger') + '">' +
+                (payment.employee && payment.employee.employee_status ? 'Active' : 'Deactive') +
+                '</span></td>' +
+                '<td><div class="dropdown">' +
+                '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
+                '<i class="dw dw-more"></i>' +
+                '</a>' +
+                '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                '<a class="dropdown-item" href="/payment/' + payment.payment_id + '">' +
+                '<i class="dw dw-eye"></i> View' +
+                '</a>' +
+                '<a class="dropdown-item" href="/payment/' + payment.payment_id + '/edit">' +
+                '<i class="dw dw-edit2"></i> Edit' +
+                '</a>' +
+                '<a class="dropdown-item" href="/payments/' + payment.employee_id + '">' +
+                '<i class="dw dw-money"></i> All Payments' +
+                '</a>' +
+                '</div>' +
+                '</div></td>' +
+                '</tr>';
+
+            tbody.append(row);
         });
     </script>
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
