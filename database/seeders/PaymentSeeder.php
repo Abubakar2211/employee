@@ -1,24 +1,24 @@
 <?php
 
 namespace Database\Seeders;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\Payment;
-
 
 class PaymentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Payment::create([
-            'Employee_id' => 1,
-            'payment' => '10000',
-            'date_time' => Now(),
-            'employee_status' => 1
-        ]);
+        for ($i = 0; $i < 20; $i++) {
+            Payment::create([
+                'Employee_id' => rand(1, 8),
+                'payment' => rand(5000, 20000),
+                'date_time' => Carbon::now()->subDays(rand(1, 365)),
+                'payment_status' => rand(0, 1),
+            ]);
+        }
     }
 }
+

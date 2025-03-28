@@ -7,8 +7,8 @@
                 <div class="card-box mb-30">
                     <div class="d-flex justify-content-between align-items-center pd-20">
                         <div>
-                            <h4 class="text-blue h4">Employees Tables</h4>
-                            <p class="mb-0">This is employees records</p>
+                            <h4 class="text-blue h4">Payments Tables</h4>
+                            <p class="mb-0">This is payments records</p>
                         </div>
                         <div class="d-flex gap-2">
                             <!-- Add Employee Button -->
@@ -20,31 +20,15 @@
                                 </button>
                                 <form id="paymentFilterForm">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
-                                        <!-- Status Filter -->
-                                        <label for="paymentStatusFilter">Select the Employee Status:</label>
-                                        <select class="form-control mb-2" id="paymentStatusFilter"
-                                            name="paymentStatusFilter">
-                                            <option value="">Status</option>
+                                        <label for="paymentStatusFilter">Select the Payment Status:</label>
+                                        <select class="form-control mb-2" id="payemnt_status" name="payemnt_status">
                                             @foreach ($allStatus as $status)
                                                 <option value="{{ $status }}">{{ $status }}</option>
                                             @endforeach
                                         </select>
 
-                                        <!-- Employee Name Filter -->
-                                        <label for="paymentEmployeeFilter">Employees Names:</label>
-                                        <select class="form-control mb-3" id="paymentEmployeeFilter"
-                                            name="paymentEmployeeFilter">
-                                            <option value="">Names</option>
-                                        </select>
-                                        <div>
-                                            <label for="payment_date">Payment Date:</label>
-                                            <input class="form-control month-picker mb-3" id="paymentEmployeeDate"
-                                                name="payment_date" placeholder="Select Payment Month" type="text">
-                                      </div>
-                                        <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
-                                                Filter</button>
+                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>
@@ -55,7 +39,7 @@
                     </div>
                     <div class="pb-20">
                         <div class="table-responsive">
-                            <table class="data-table table table-striped table-hover nowrap">
+                            <table class="data-table table table-striped table-hover nowrap" id="filter_payment_table">
                                 <thead>
                                     <tr>
                                         <th class="table-plus datatable-nosort">S.No</th>
@@ -76,8 +60,8 @@
                                             <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
-                                                    class="badge {{ $payment->employee_status ? 'badge-success' : 'badge-danger' }}">
-                                                    {{ $payment->employee_status ? 'Active' : 'Deactive' }}
+                                                    class="badge {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $payment->payment_status == 1 ? 'Active' : 'Deactive' }}
                                                 </span>
                                             </td>
                                             <td>
@@ -98,14 +82,6 @@
                                                             href="{{ route('payments', $payment->payment_id) }}">
                                                             <i class="dw dw-money"></i> All Payment
                                                         </a>
-                                                        {{-- <form
-                                                            action="{{ route('payment.destroy', $payment->payment_id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="dropdown-item"><i class="dw dw-delete-3"></i>
-                                                                Delete</button>
-                                                        </form> --}}
                                                     </div>
                                                 </div>
                                             </td>

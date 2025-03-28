@@ -14,16 +14,68 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::where('employee_status',1)->with('employee')->latest()->get()->unique('employee_id');
-        $allStatus = Payment::pluck('employee_status')->unique()->values()->all();
-        $statusMap = [
-            1 => "Active",
-            0 => "Deactive",
-        ];
-        $allStatus = array_map(function ($status) use ($statusMap) {
-            return $statusMap[$status] ?? 'Unknown';
-        }, $allStatus);
+        $payments = Payment::with('employee')
+            ->where('payment_status', 1)
+            ->orderByDesc('payment_id')
+            ->get()
+            ->unique('employee_id');
+
+        $allStatus = ['Active', 'Deactive', 'All'];
+
         return view('payments', compact('payments', 'allStatus'));
+    }
+
+    public function filterPayments(Request $request)
+    {
+        $status = $request->status;
+
+        $baseQuery = Payment::with('employee');
+
+        if ($status === '1') {
+            // Latest active payments (unique by employee)
+            return $baseQuery->where('payment_status', 1)
+                ->latest('date_time')
+                ->get()
+                ->unique('employee_id');
+
+        } elseif ($status === '0') {
+            // Latest deactive payments (unique by employee)
+            return $baseQuery->where('payment_status', 0)
+                ->latest('date_time')
+                ->get()
+                ->unique('employee_id');
+
+        } else {
+            // For 'All' - get both latest active AND deactive for each employee
+
+            // Get all employees who have payments
+            $employeeIds = Payment::distinct()->pluck('employee_id');
+
+            $results = collect();
+
+            foreach ($employeeIds as $employeeId) {
+                // Get latest active for this employee
+                $latestActive = $baseQuery->clone()
+                    ->where('employee_id', $employeeId)
+                    ->where('payment_status', 1)
+                    ->latest('date_time')
+                    ->first();
+
+                // Get latest deactive for this employee
+                $latestDeactive = $baseQuery->clone()
+                    ->where('employee_id', $employeeId)
+                    ->where('payment_status', 0)
+                    ->latest('date_time')
+                    ->first();
+
+                // Add to results if they exist
+                if ($latestActive) $results->push($latestActive);
+                if ($latestDeactive) $results->push($latestDeactive);
+            }
+
+            // Sort all results by date_time descending
+            return $results->sortByDesc('date_time')->values();
+        }
     }
 
     /**
@@ -44,7 +96,7 @@ class PaymentController extends Controller
             'employee_id' => 'required',
             'payment' => 'required',
             'date_time' => 'required',
-            'employee_status' => 'boolean',
+            'payment_status' => 'boolean',
         ]);
         $payment['date_time'] = Carbon::parse($payment['date_time'])->format('Y-m-d');
         Payment::create($payment);
@@ -60,6 +112,8 @@ class PaymentController extends Controller
         return view('payment_show',compact('payment'));
     }
 
+
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -68,7 +122,7 @@ class PaymentController extends Controller
         $payment = Payment::with('employee')->where('payment_id',$id)->first();
         return view('payment_edit',compact('payment'));
     }
-  
+
     /**
      * Update the specified resource in storage.
      */
@@ -95,49 +149,7 @@ class PaymentController extends Controller
 
     }
 
-    public function filterPayments(Request $request)
-    {
-            $query = Payment::with('employee');
-            // $query = Payment::with(['employee' => function($query) {
-            //     $query->select('employee_name', 'employee_status');
-            // }])
-            // ->select('payment', 'date_time', 'payment_id');
 
-        // Filter by status if provided
-        if ($request->status) {
-            $statusMap = [
-                "Active" => 1,
-                "Deactive" => 0,
-            ];
-            $statusValue = $statusMap[$request->status] ?? null;
-
-            if ($statusValue !== null) {
-                $query->whereHas('employee', function($q) use ($statusValue) {
-                    $q->where('employee_status', $statusValue);
-                });
-            }
-        }
-
-        // Filter by employee_id if provided
-        if ($request->employee_id) {
-            $query->where('employee_id', $request->employee_id);
-        }
-
-        // Filter by date if provided
-        if ($request->date_time) {
-            // Convert the date format from "17 March 2025" to "Y-m-d" format
-            $formattedDate = Carbon::createFromFormat('d F Y', $request->date_time)->format('Y-m-d');
-            $query->whereDate('date_time', $formattedDate);
-        }
-
-        $payments = $query->orderBy('date_time', 'desc')->get();
-
-        return response()->json([
-            'success' => true,
-            'payments' => $payments,
-            'message' => 'Payments filtered successfully'
-        ]);
-    }
 
     public function payments($paymentId)
     {

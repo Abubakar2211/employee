@@ -18,7 +18,7 @@
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filters
                                 </button>
-                                <form id="paymentFilterForm">
+                                <form id="employeeFilterForm">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
                                         <!-- Status Filter -->
                                         <label for="paymentStatusFilter">Select the Employee Status:</label>

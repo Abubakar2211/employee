@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     public $table = 'employee_payment';
-    protected $fillable = ['employee_id','payment','date_time','employee_status'];
+    protected $fillable = ['employee_id','payment','date_time','payment_status'];
     protected $primaryKey = 'payment_id';
 
     public function employee(){
-        return $this->belongsTo(Employee::class,'employee_id','employee_id');
+          return $this->belongsTo(Employee::class,'employee_id','employee_id');
     }
 }
