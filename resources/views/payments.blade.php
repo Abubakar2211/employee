@@ -26,9 +26,15 @@
                                                 <option value="{{ $status }}">{{ $status }}</option>
                                             @endforeach
                                         </select>
-
+                                        <!-- Employee Name Filter -->
+                                        <label for="paymentEmployeeFilter">Employees Names:</label>
+                                        <select class="form-control mb-3" id="paymentEmployeeFilter"
+                                            name="paymentEmployeeFilter">
+                                            <option value="">Names</option>
+                                        </select>
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset Filter</button>
+                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
+                                                Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>

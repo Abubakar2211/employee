@@ -27,57 +27,54 @@ class PaymentController extends Controller
 
     public function filterPayments(Request $request)
     {
-        $status = $request->status;
+        // If only need employees list
+        if ($request->has('employees_only')) {
+            $query = Employee::select('employee_id', 'employee_name')
+                     ->whereHas('payments'); // Only employees who have payments
 
-        $baseQuery = Payment::with('employee');
-
-        if ($status === '1') {
-            // Latest active payments (unique by employee)
-            return $baseQuery->where('payment_status', 1)
-                ->latest('date_time')
-                ->get()
-                ->unique('employee_id');
-
-        } elseif ($status === '0') {
-            // Latest deactive payments (unique by employee)
-            return $baseQuery->where('payment_status', 0)
-                ->latest('date_time')
-                ->get()
-                ->unique('employee_id');
-
-        } else {
-            // For 'All' - get both latest active AND deactive for each employee
-
-            // Get all employees who have payments
-            $employeeIds = Payment::distinct()->pluck('employee_id');
-
-            $results = collect();
-
-            foreach ($employeeIds as $employeeId) {
-                // Get latest active for this employee
-                $latestActive = $baseQuery->clone()
-                    ->where('employee_id', $employeeId)
-                    ->where('payment_status', 1)
-                    ->latest('date_time')
-                    ->first();
-
-                // Get latest deactive for this employee
-                $latestDeactive = $baseQuery->clone()
-                    ->where('employee_id', $employeeId)
-                    ->where('payment_status', 0)
-                    ->latest('date_time')
-                    ->first();
-
-                // Add to results if they exist
-                if ($latestActive) $results->push($latestActive);
-                if ($latestDeactive) $results->push($latestDeactive);
+            if ($request->status === '1' || $request->status === '0') {
+                $query->whereHas('payments', function($q) use ($request) {
+                    $q->where('payment_status', $request->status);
+                });
             }
 
-            // Sort all results by date_time descending
-            return $results->sortByDesc('date_time')->values();
+            return response()->json([
+                'employees' => $query->pluck('employee_name', 'employee_id'),
+                'payments' => []
+            ]);
         }
-    }
 
+        // Normal filtering for table data
+        $status = $request->status;
+        $employeeId = $request->employee_id;
+
+        $baseQuery = Payment::with('employee:employee_id,employee_name')
+                    ->select('payment_id', 'employee_id', 'payment', 'date_time', 'payment_status');
+
+        if ($status === '1') {
+            $baseQuery->where('payment_status', 1);
+        } elseif ($status === '0') {
+            $baseQuery->where('payment_status', 0);
+        }
+
+        if ($employeeId) {
+            $baseQuery->where('employee_id', $employeeId);
+        }
+
+        $payments = $baseQuery->latest('date_time')
+                     ->get()
+                     ->unique('employee_id');
+
+        // Get all employees who have payments (regardless of employee_status)
+        $employees = Employee::select('employee_id', 'employee_name')
+                    ->whereHas('payments')
+                    ->pluck('employee_name', 'employee_id');
+
+        return response()->json([
+            'payments' => $payments,
+            'employees' => $employees
+        ]);
+    }   
     /**
      * Show the form for creating a new resource.
      */
