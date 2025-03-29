@@ -8,8 +8,8 @@
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <h4 class="text-blue h4">New Employee Created Form</h4>
-                            <p class="mb-30">Insert the employee information</p>
+                            <h4 class="text-blue h4">New Payment Created Form</h4>
+                            <p class="mb-30">Insert the payment information</p>
                         </div>
                     </div>
                     <form action="{{ route('payment.store') }}" method="post">
