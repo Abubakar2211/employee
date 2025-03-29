@@ -57,24 +57,27 @@
                         <div class="login-title">
                             <h2 class="text-center text-primary">Login To DeskApp</h2>
                         </div>
-                        @if ($errors->has("login_error"))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{$errors->first('login_error')}}</strong> 
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+                        @if (session('login_error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{ session('login_error') }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
-                        <form action="{{route('login_post')}}" method="POST">
+
+                        <form action="{{ route('login_post') }}" method="POST">
                             @csrf
                             <div class="input-group custom">
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter your mail" name="employee_email">
+                                <input type="text" class="form-control form-control-lg" placeholder="Enter your mail"
+                                    name="employee_email">
                                 <div class="input-group-append custom">
                                     <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
                                 </div>
                             </div>
                             <div class="input-group custom">
-                                <input type="password" class="form-control form-control-lg" placeholder="**********" name="employee_password">
+                                <input type="password" class="form-control form-control-lg" placeholder="**********"
+                                    name="employee_password">
                                 <div class="input-group-append custom">
                                     <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
                                 </div>
@@ -84,15 +87,15 @@
                                     <div class="input-group mb-0">
                                         <button class="btn btn-primary btn-lg btn-block">Sign In</button>
                                     </div>
-                                    </div>
-                                    
                                 </div>
+
                             </div>
-                        </form>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <!-- js -->
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>

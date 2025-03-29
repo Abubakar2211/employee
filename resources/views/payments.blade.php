@@ -78,9 +78,6 @@
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                                                         <a class="dropdown-item"
-                                                            href="{{ route('payment.show', $payment->payment_id) }}"><i
-                                                                class="dw dw-eye"></i> View</a>
-                                                        <a class="dropdown-item"
                                                             href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
                                                         </a>

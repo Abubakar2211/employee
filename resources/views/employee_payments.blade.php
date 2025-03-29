@@ -7,17 +7,13 @@
                 <div class="card-box mb-30">
                     <div class="d-flex justify-content-between align-items-center pd-20">
                         <div>
-                            <h4 class="text-blue h4">Employees Tables</h4>
-                            <p class="mb-0">This is employees records</p>
+                            <h4 class="text-blue h4">Payment Tables</h4>
+                            <p class="mb-0">This is payments records</p>
                         </div>
                         <div class="d-flex gap-2">
                             <!-- Add Employee Button -->
                             <!-- Dropdown Button -->
                             <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="filterDropdown"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filters
-                                </button>
                                 <form id="employeeFilterForm">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
                                         <!-- Status Filter -->
@@ -72,8 +68,8 @@
                                             <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
-                                                    class="badge {{ $payment->employee_status ? 'badge-success' : 'badge-danger' }}">
-                                                    {{ $payment->employee_status ? 'Active' : 'Deactive' }}
+                                                    class="badge {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $payment->payment_status == 1 ? 'Active' : 'Deactive' }}
                                                 </span>
                                             </td>
                                             <td>

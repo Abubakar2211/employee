@@ -21,26 +21,26 @@
                                 </button>
                                 <form id="filterForm">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
-                                        <!-- First Select Field -->
-                                        <label for="filter1">Select the Employee Status:</label>
-                                        <select class="form-control mb-2" id="filter1" name="filter1">
-                                            @foreach ($allStatus as $status)
-                                                <option value="{{ $status }}">{{ $status }}</option>
-                                            @endforeach
+                                        <!-- Status Filter -->
+                                        <label for="statusFilter">Select the Employee Status:</label>
+                                        <select class="form-control mb-2" id="statusFilter" name="status">
+                                            <option value="Active">Active</option>
+                                            <option value="Deactive">Deactive</option>
+                                            <option value="all">All</option>
                                         </select>
-                                
-                                        <!-- Second Select Field -->
-                                        <label for="filter2">Employees Names:</label>
-                                        <select class="form-control mb-3" id="filter2" name="filter2">
+
+                                        <!-- Employee Filter -->
+                                        <label for="employeeFilter">Employees Names:</label>
+                                        <select class="form-control mb-3" id="employeeFilter" name="employee_id">
                                             <option value="">All Employees</option>
                                             @foreach ($allEmployees as $id => $name)
                                                 <option value="{{ $id }}">{{ $name }}</option>
                                             @endforeach
                                         </select>
-                                        
+
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resertFilter" class="btn btn-secondary">Reset Filter</button>
+                                            <button type="reset" id="resetFilter" class="btn btn-secondary">Reset Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>

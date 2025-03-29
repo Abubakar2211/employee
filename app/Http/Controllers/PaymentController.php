@@ -74,7 +74,7 @@ class PaymentController extends Controller
             'payments' => $payments,
             'employees' => $employees
         ]);
-    }   
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -150,16 +150,20 @@ class PaymentController extends Controller
 
     public function payments($paymentId)
     {
-        $payment = Payment::where('payment_id', $paymentId)->first();
-        if (!$payment) {
-            return 'Payment record not found';
-        }
-        $employee = Employee::where('employee_id', $payment->employee_id)->first();
+        // Get the payment record to find the employee
+        $payment = Payment::with('employee')->find($paymentId);
 
-        $payments = Payment::where('employee_id', $employee->employee_id)->get();
+        if (!$payment) {
+            return redirect()->back()->with('error', 'Payment record not found');
+        }
+
+        // Get all payments for this employee, ordered by date (newest first)
+        $payments = Payment::where('employee_id', $payment->employee_id)
+                    ->orderBy('date_time', 'desc')
+                    ->get();
 
         return view('employee_payments', [
-            'employee_name' => $employee->name,
+            'employee' => $payment->employee, // Pass the whole employee object
             'payments' => $payments
         ]);
     }

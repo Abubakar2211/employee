@@ -19,11 +19,11 @@ class EmployeeController extends Controller
     {
         $employees = Employee::where('employee_status', 1)->get();
         $allStatus = ['Active', 'Deactive', 'All'];
-
-        $allEmployees = Employee::pluck('employee_name', 'employee_id');
+        $allEmployees = Employee::where('employee_status', 1)->pluck('employee_name', 'employee_id');
 
         return view('employees', compact('employees', 'allStatus', 'allEmployees'));
     }
+
     public function filterEmployees(Request $request)
     {
         $status = $request->input('status');
@@ -31,16 +31,9 @@ class EmployeeController extends Controller
 
         $query = Employee::query();
 
-        if ($status && $status !== 'All') {
-            $statusMap = [
-                "Active" => 1,
-                "Deactive" => 0,
-            ];
-            $statusValue = $statusMap[$status] ?? null;
-
-            if ($statusValue !== null) {
-                $query->where('employee_status', $statusValue);
-            }
+        if ($status && $status !== 'all') {
+            $statusValue = $status === 'Active' ? 1 : 0;
+            $query->where('employee_status', $statusValue);
         }
 
         if ($employeeId) {
@@ -51,30 +44,21 @@ class EmployeeController extends Controller
 
         return response()->json($employees);
     }
+
     public function getEmployeesByStatus(Request $request)
     {
         $status = $request->input('status');
 
-        if ($status === 'All') {
+        if ($status === 'all') {
             $employees = Employee::pluck('employee_name', 'employee_id');
         } else {
-            $statusMap = [
-                "Active" => 1,
-                "Deactive" => 0,
-            ];
-            $statusValue = $statusMap[$status] ?? null;
-
-            if ($statusValue !== null) {
-                $employees = Employee::where('employee_status', $statusValue)
-                    ->pluck('employee_name', 'employee_id');
-            } else {
-                $employees = [];
-            }
+            $statusValue = $status === 'Active' ? 1 : 0;
+            $employees = Employee::where('employee_status', $statusValue)
+                                ->pluck('employee_name', 'employee_id');
         }
 
         return response()->json($employees);
     }
-
     /**
      * Show the form for creating a new resource.
      */

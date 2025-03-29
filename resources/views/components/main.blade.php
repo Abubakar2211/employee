@@ -312,41 +312,32 @@
     <!-- Fix: Prevent Dropdown from Closing on Click -->
     <script>
         $(document).ready(function() {
-
-            //  ===== Get The Employee Name To Employee Status
-
-            $('#filter1').change(function() {
+            // Update employee dropdown based on status selection
+            $('#statusFilter').change(function() {
                 var status = $(this).val();
 
-                // Clear previous options
-                $('#filter2').empty().append('<option value="">Select Employee</option>');
-
-                if (status) {
-                    $.ajax({
-                        url: '/get-employees-by-status',
-                        type: 'GET',
-                        data: {
-                            status: status
-                        },
-                        success: function(response) {
-                            $.each(response, function(employee_id, employee_name) {
-                                $('#filter2').append('<option value="' + employee_id +
-                                    '">' + employee_name + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.log('AJAX Error:', xhr.responseText);
-                        }
-                    });
-                }
+                $.ajax({
+                    url: '/get-employees-by-status',
+                    type: 'GET',
+                    data: { status: status },
+                    success: function(response) {
+                        $('#employeeFilter').empty().append('<option value="">All Employees</option>');
+                        $.each(response, function(id, name) {
+                            $('#employeeFilter').append('<option value="' + id + '">' + name + '</option>');
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
             });
 
             // Form submission handler
             $('#filterForm').submit(function(e) {
                 e.preventDefault();
 
-                var status = $('#filter1').val();
-                var employeeId = $('#filter2').val();
+                var status = $('#statusFilter').val();
+                var employeeId = $('#employeeFilter').val();
 
                 $.ajax({
                     url: '/filter-employees',
@@ -359,7 +350,23 @@
                         updateTable(response);
                     },
                     error: function(xhr) {
-                        console.log('AJAX Error:', xhr.responseText);
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
+            });
+
+            // Reset filter handler
+            $('#resetFilter').click(function() {
+                $('#filterForm')[0].reset();
+                $('#employeeFilter').empty().append('<option value="">All Employees</option>');
+
+                // Reload original data
+                $.ajax({
+                    url: '/filter-employees',
+                    type: 'GET',
+                    data: { status: 'Active' },
+                    success: function(response) {
+                        updateTable(response);
                     }
                 });
             });
@@ -369,18 +376,20 @@
                 tbody.empty();
 
                 $.each(employees, function(i, employee) {
+                    var statusBadge = employee.employee_status ?
+                        '<span class="badge badge-success">Active</span>' :
+                        '<span class="badge badge-danger">Deactive</span>';
+
                     var row = '<tr>' +
                         '<td class="table-plus">' + (i + 1) + '</td>' +
-                        '<td>' + employee.employee_code + '</td>' +
-                        '<td>' + employee.employee_name + '</td>' +
-                        '<td>' + employee.employee_email + '</td>' +
-                        '<td>' + employee.employee_number + '</td>' +
-                        '<td>' + employee.employee_CNIC + '</td>' +
-                        '<td>' + employee.employee_d_o_b + '</td>' +
-                        '<td>' + employee.employee_d_o_j + '</td>' +
-                        '<td><span class="badge ' + (employee.employee_status ? 'badge-success' :
-                            'badge-danger') + '">' +
-                        (employee.employee_status ? 'Active' : 'Deactive') + '</span></td>' +
+                        '<td>' + (employee.employee_code || '') + '</td>' +
+                        '<td>' + (employee.employee_name || '') + '</td>' +
+                        '<td>' + (employee.employee_email || '') + '</td>' +
+                        '<td>' + (employee.employee_number || '') + '</td>' +
+                        '<td>' + (employee.employee_CNIC || '') + '</td>' +
+                        '<td>' + (employee.employee_d_o_b || '') + '</td>' +
+                        '<td>' + (employee.employee_d_o_j || '') + '</td>' +
+                        '<td>' + statusBadge + '</td>' +
                         '<td><div class="dropdown">' +
                         '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
@@ -390,9 +399,9 @@
                         '<i class="dw dw-edit2"></i> Edit' +
                         '</a>' +
                         '<form action="/employee/' + employee.employee_id + '" method="post">' +
-                        '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
-                        '<input type="hidden" name="_method" value="DELETE">' +
-                        '<button class="dropdown-item"><i class="dw dw-delete-3"></i> Delete</button>' +
+                        '@csrf' +
+                        '@method("DELETE")' +
+                        '<button type="submit" class="dropdown-item"><i class="dw dw-delete-3"></i> Delete</button>' +
                         '</form>' +
                         '</div>' +
                         '</div></td>' +
@@ -401,16 +410,9 @@
                     tbody.append(row);
                 });
             }
-
-            // ==== Resert Filter =====
-
-            $('#resertFilter').click(function() {
-                $('#filterForm')[0].reset();
-                $('#filer2').html('<option value="">Names</option>')
-            })
-
         });
-    </script>
+        </script>
+
     <script>
 $(document).ready(function() {
     // Store original table data

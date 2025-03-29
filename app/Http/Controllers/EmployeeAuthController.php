@@ -24,7 +24,7 @@ class EmployeeAuthController extends Controller
             return redirect()->route('dashboard')->with('success', 'Employee logged in successfully');
         }
 
-        return redirect()->back()->withErrors(['message' => 'Invalid  Credentials']);
+        return redirect()->back()->with('login_error', 'Invalid Credentials');
     }
     public function logout(Request $request)
     {
