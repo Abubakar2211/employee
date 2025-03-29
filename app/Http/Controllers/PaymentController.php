@@ -13,18 +13,21 @@ class PaymentController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $payments = Payment::with('employee')
-            ->where('payment_status', 1)
-            ->orderByDesc('payment_id')
-            ->get()
-            ->unique('employee_id');
+{
+    $payments = Payment::with('employee')
+        ->where('payment_status', 1)
+        ->whereBetween('date_time', [
+            now()->startOfMonth(),
+            now()->endOfMonth()
+        ])
+        ->orderByDesc('payment_id')
+        ->get()
+        ->unique('employee_id');
 
-        $allStatus = ['Active', 'Deactive', 'All'];
+    $allStatus = ['Active', 'Deactive', 'All'];
 
-        return view('payments', compact('payments', 'allStatus'));
-    }
-
+    return view('payments', compact('payments', 'allStatus'));
+}
     public function filterPayments(Request $request)
     {
         // If only need employees list (same as before)

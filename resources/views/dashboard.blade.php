@@ -8,7 +8,6 @@
 				<div class="col-lg-3 col-md-6 col-sm-12 mb-30">
 					<div class="card-box pd-30 height-100-p">
 						<div class="progress-box text-center">
-							 <input type="text" class="knob dial1" value="{{$employee_total}}" data-width="120" data-height="120" data-linecap="round" data-thickness="0.12" data-bgColor="#fff" data-fgColor="#1b00ff" data-angleOffset="180" readonly>
 							<h5 class="text-blue padding-top-10 h5">My All Employees</h5>
 							<span class="d-block">{{ $employee_total }}% Average <i class="fa fa-line-chart text-blue"></i></span>
 						</div>
@@ -17,7 +16,6 @@
 				<div class="col-lg-3 col-md-6 col-sm-12 mb-30">
 					<div class="card-box pd-30 height-100-p">
 						<div class="progress-box text-center">
-							 <input type="text" class="knob dial2" value="80" data-width="120" data-height="120" data-linecap="round" data-thickness="0.12" data-bgColor="#fff" data-fgColor="#00e091" data-angleOffset="180" readonly>
 							<h5 class="text-light-green padding-top-10 h5">Employee Active</h5>
 							<span class="d-block">{{ $employee_active }}% Average <i class="fa text-light-green fa-line-chart"></i></span>
 						</div>
@@ -26,7 +24,6 @@
 				<div class="col-lg-3 col-md-6 col-sm-12 mb-30">
 					<div class="card-box pd-30 height-100-p">
 						<div class="progress-box text-center">
-							 <input type="text" class="knob dial3" value="90" data-width="120" data-height="120" data-linecap="round" data-thickness="0.12" data-bgColor="#fff" data-fgColor="#f56767" data-angleOffset="180" readonly>
 							<h5 class="text-light-orange padding-top-10 h5">Employee Deactive</h5>
 							<span class="d-block">{{ $employee_deactive }}% Average <i class="fa text-light-orange fa-line-chart"></i></span>
 						</div>
@@ -35,7 +32,6 @@
 				<div class="col-lg-3 col-md-6 col-sm-12 mb-30">
 					<div class="card-box pd-30 height-100-p">
 						<div class="progress-box text-center">
-							 <input type="text" class="knob dial4" value="65" data-width="120" data-height="120" data-linecap="round" data-thickness="0.12" data-bgColor="#fff" data-fgColor="#a683eb" data-angleOffset="180" readonly>
 							<h5 class="text-light-purple padding-top-10 h5">Total Payment Active</h5>
 							<span class="d-block">{{ $total_payments }}% Average <i class="fa text-light-purple fa-line-chart"></i></span>
 						</div>
