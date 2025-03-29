@@ -21,20 +21,20 @@
                                 <form id="paymentFilterForm">
                                     <div class="dropdown-menu p-3" aria-labelledby="filterDropdown" style="width: 280px;">
                                         <label for="paymentStatusFilter">Select the Payment Status:</label>
-                                        <select class="form-control mb-2" id="payemnt_status" name="payemnt_status">
-                                            @foreach ($allStatus as $status)
-                                                <option value="{{ $status }}">{{ $status }}</option>
-                                            @endforeach
+                                        <select class="form-control mb-2" id="paymentStatusFilter" name="status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Deactive</option>
+                                            <option value="">All</option>
                                         </select>
-                                        <!-- Employee Name Filter -->
+
                                         <label for="paymentEmployeeFilter">Employees Names:</label>
-                                        <select class="form-control mb-3" id="paymentEmployeeFilter"
-                                            name="paymentEmployeeFilter">
-                                            <option value="">Names</option>
+                                        <select class="form-control mb-3" id="paymentEmployeeFilter" name="employee_id">
+                                            <option value="">All Employees</option>
                                         </select>
+                                        <label for="payment_date">Payment Month:</label>
+                                        <input class="form-control mb-3" id="paymentEmployeeDate" name="payment_date" placeholder="Select Month" type="month">
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
-                                                Filter</button>
+                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>
@@ -51,7 +51,8 @@
                                         <th class="table-plus datatable-nosort">S.No</th>
                                         <th>Employee</th>
                                         <th>Payment</th>
-                                        <th>Time</th>
+                                        <th>Date</th>
+                                        <th>Payment Created</th>
                                         <th>Payment Status</th>
                                         <th class="datatable-nosort">Action</th>
                                     </tr>
@@ -64,6 +65,7 @@
                                             <td>{{ $payment->employee->employee_name }}</td>
                                             <td class="table-plus">Rs:{{ $payment->payment }}</td>
                                             <td>{{ $payment->date_time }}</td>
+                                            <td>{{ $payment->created_at }}</td>
                                             <td>
                                                 <span
                                                     class="badge {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">

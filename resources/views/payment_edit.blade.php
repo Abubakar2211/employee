@@ -36,14 +36,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Status:</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input type="hidden" name="employee_status" value="0">
-                                <input type="checkbox" class="switch-btn" name="employee_status" value="1"
-                                    {{ $payment->employee_status ? 'checked' : '' }} data-color="#0099ff">
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Status:</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <input type="hidden" name="payment_status" value="0">
+                                    <input type="checkbox" class="switch-btn" name="payment_status" value="1"
+                                        {{ $payment->payment_status ? 'checked' : '' }} data-color="#0099ff">
+                                </div>
                             </div>
-                        </div>
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-primary">Submit</button>
                         </div>

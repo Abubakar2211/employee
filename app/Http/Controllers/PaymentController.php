@@ -27,14 +27,18 @@ class PaymentController extends Controller
 
     public function filterPayments(Request $request)
     {
-        // If only need employees list
+        // If only need employees list (same as before)
         if ($request->has('employees_only')) {
             $query = Employee::select('employee_id', 'employee_name')
-                     ->whereHas('payments'); // Only employees who have payments
+                     ->whereHas('payments');
 
-            if ($request->status === '1' || $request->status === '0') {
-                $query->whereHas('payments', function($q) use ($request) {
-                    $q->where('payment_status', $request->status);
+            if ($request->status === '1') {
+                $query->whereHas('payments', function($q) {
+                    $q->where('payment_status', 1);
+                });
+            } elseif ($request->status === '0') {
+                $query->whereHas('payments', function($q) {
+                    $q->where('payment_status', 0);
                 });
             }
 
@@ -47,9 +51,10 @@ class PaymentController extends Controller
         // Normal filtering for table data
         $status = $request->status;
         $employeeId = $request->employee_id;
+        $paymentDate = $request->payment_date; // YYYY-MM format में date आएगी
 
         $baseQuery = Payment::with('employee:employee_id,employee_name')
-                    ->select('payment_id', 'employee_id', 'payment', 'date_time', 'payment_status');
+                    ->select('payment_id', 'employee_id', 'payment', 'date_time', 'created_at', 'payment_status');
 
         if ($status === '1') {
             $baseQuery->where('payment_status', 1);
@@ -61,18 +66,21 @@ class PaymentController extends Controller
             $baseQuery->where('employee_id', $employeeId);
         }
 
+        if ($paymentDate) {
+            $baseQuery->whereYear('date_time', '=', substr($paymentDate, 0, 4))
+                      ->whereMonth('date_time', '=', substr($paymentDate, 5, 2));
+        }
+
         $payments = $baseQuery->latest('date_time')
                      ->get()
+                     ->map(function ($payment) {
+                         $payment->formatted_created_at = $payment->created_at->format('Y-m-d H:i:s');
+                         return $payment;
+                     })
                      ->unique('employee_id');
 
-        // Get all employees who have payments (regardless of employee_status)
-        $employees = Employee::select('employee_id', 'employee_name')
-                    ->whereHas('payments')
-                    ->pluck('employee_name', 'employee_id');
-
         return response()->json([
-            'payments' => $payments,
-            'employees' => $employees
+            'payments' => $payments
         ]);
     }
     /**
@@ -123,20 +131,20 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $payment = Payment::where('payment_id', $id)->firstOrFail();
+        public function update(Request $request, string $id)
+        {
+            $payment = Payment::where('payment_id', $id)->firstOrFail();
 
-        $validatedData = $request->validate([
-            'date_time' => 'required',
-            'payment' => 'required',
-            'employee_status' => 'boolean',
-        ]);
+            $validatedData = $request->validate([
+                'date_time' => 'required',
+                'payment' => 'required',
+                'payment_status' => 'boolean',
+            ]);
 
-        $payment->update($validatedData);
+            $payment->update($validatedData);
 
-        return redirect()->route('payment.index');
-    }
+            return redirect()->route('payment.index');
+        }
 
     /**
      * Remove the specified resource from storage.

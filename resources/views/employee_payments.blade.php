@@ -68,7 +68,7 @@
                                             <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
-                                                    class="badge {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                                   class="badge  {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">
                                                     {{ $payment->payment_status == 1 ? 'Active' : 'Deactive' }}
                                                 </span>
                                             </td>
@@ -79,9 +79,6 @@
                                                         <i class="dw dw-more"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('payment.show', $payment->payment_id) }}"><i
-                                                                class="dw dw-eye"></i> View</a>
                                                         <a class="dropdown-item"
                                                             href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
