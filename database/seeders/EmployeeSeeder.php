@@ -24,11 +24,12 @@ class EmployeeSeeder extends Seeder
         ];
 
         foreach ($employees as $emp) {
+            $encryptedPassword = encrypt($emp[3]);
             Employee::create([
                 'employee_code' => $emp[0],
                 'employee_name' => $emp[1],
                 'employee_email' => $emp[2],
-                'employee_password' => Hash::make($emp[3]),
+                'employee_password' => $encryptedPassword,
                 'employee_number' => $emp[4],
                 'employee_CNIC' => $emp[5],
                 'employee_d_o_b' => $emp[6],

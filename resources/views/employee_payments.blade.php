@@ -54,7 +54,7 @@
                                         <th>Employee</th>
                                         <th>Payment</th>
                                         <th>Time</th>
-                                        <th>Payment Status</th>
+                                        <th>Status</th>
                                         <th class="datatable-nosort">Action</th>
                                     </tr>
                                 </thead>
@@ -68,8 +68,8 @@
                                             <td>{{ $payment->date_time }}</td>
                                             <td>
                                                 <span
-                                                   class="badge  {{ $payment->payment_status == 1 ? 'badge-success' : 'badge-danger' }}">
-                                                    {{ $payment->payment_status == 1 ? 'Active' : 'Deactive' }}
+                                                   class="badge  {{ $payment->employee->employee_status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $payment->employee->employee_status == 1 ? 'Active' : 'Deactive' }}
                                                 </span>
                                             </td>
                                             <td>

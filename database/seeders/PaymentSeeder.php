@@ -16,7 +16,6 @@ class PaymentSeeder extends Seeder
                 'Employee_id' => rand(1, 8),
                 'payment' => rand(5000, 20000),
                 'date_time' => Carbon::now()->subDays(rand(1, 365)),
-                'payment_status' => rand(0, 1),
             ]);
         }
     }

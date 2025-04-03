@@ -3,7 +3,19 @@
     <div class="main-container">
         <div class="pd-ltr-20 xs-pd-20-10">
             <div class="min-height-200px">
-
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="autoCloseAlert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <script>
+                        setTimeout(function() {
+                            $('#autoCloseAlert').alert('close');
+                        }, 3000);
+                    </script>
+                @endif
                 <!-- Simple Datatable start -->
                 <div class="card-box mb-30">
                     <div class="d-flex justify-content-between align-items-center pd-20">
@@ -40,7 +52,8 @@
 
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetFilter" class="btn btn-secondary">Reset Filter</button>
+                                            <button type="reset" id="resetFilter" class="btn btn-secondary">Reset
+                                                Filter</button>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>
@@ -95,14 +108,6 @@
                                                             href="{{ route('employee.edit', $employee->employee_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
                                                         </a>
-                                                        <form
-                                                            action="{{ route('employee.destroy', $employee->employee_id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="dropdown-item"><i class="dw dw-delete-3"></i>
-                                                                Delete</button>
-                                                        </form>
                                                     </div>
                                                 </div>
                                             </td>

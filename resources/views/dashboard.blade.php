@@ -1,8 +1,19 @@
 @extends('components.main')
 @section('main-section')
-
-
 	<div class="main-container">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="autoCloseAlert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <script>
+                setTimeout(function() {
+                    $('#autoCloseAlert').alert('close');
+                }, 3000);
+            </script>
+        @endif
 		<div class="xs-pd-20-10 pd-ltr-20">
 			<div class="row clearfix progress-box">
 				<div class="col-lg-3 col-md-6 col-sm-12 mb-30">

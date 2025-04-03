@@ -129,7 +129,7 @@ class EmployeeController extends Controller
 
         $employee->update($validatedData);
 
-        return redirect()->route('employee.index');
+        return redirect()->route('employee.index')->with('success', 'Employee Updated Successfully.');
     }
 
 

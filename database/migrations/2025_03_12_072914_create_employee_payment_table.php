@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('payment');
             $table->foreignId('employee_id')->constrained('employees', 'employee_id')->onDelete('cascade');
             $table->date('date_time');
-            $table->boolean('payment_status');
             $table->timestamps();
         });
     }

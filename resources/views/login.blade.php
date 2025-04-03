@@ -69,8 +69,8 @@
                         <form action="{{ route('login_post') }}" method="POST">
                             @csrf
                             <div class="input-group custom">
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter your mail"
-                                    name="employee_email">
+                                <input type="text" class="form-control form-control-lg" placeholder="Enter your employee code"
+                                    name="employee_code">
                                 <div class="input-group-append custom">
                                     <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
                                 </div>

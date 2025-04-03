@@ -337,14 +337,15 @@ function updatePaymentTable(payments) {
     }
 
     $.each(payments, function(index, payment) {
-        var row = '<tr>' +
+    var row = '<tr>' +
             '<td class="table-plus">' + (index + 1) + '</td>' +
             '<td>' + payment.employee.employee_name + '</td>' +
             '<td class="table-plus">Rs:' + payment.payment + '</td>' +
+            // '<td class="table-plus">Rs:' + (total_payments[payment.employee.employee_id] || 0) + '</td>' +
             '<td>' + payment.date_time + '</td>' +
             '<td>' + (payment.formatted_created_at || payment.created_at) + '</td>' +
-            '<td><span class="badge ' + (payment.payment_status == 1 ? 'badge-success' : 'badge-danger') + '">' +
-            (payment.payment_status == 1 ? 'Active' : 'Deactive') + '</span></td>' +
+            '<td><span class="badge ' + (payment.employee.employee_status == 1 ? 'badge-success' : 'badge-danger') + '">' +
+            (payment.employee.employee_status == 1 ? 'Active' : 'Deactive') + '</span></td>' +
             '<td>' +
             '<div class="dropdown">' +
             '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
@@ -426,6 +427,10 @@ function applyFilters() {
     <script src="{{ asset('vendors/scripts/advanced-components.js') }}"></script>
     <!-- Datatable Setting js -->
     <script src="{{ asset('vendors/scripts/datatable-setting.js') }}"></script>
+    <!-- add sweet alert js & css in footer -->
+	<script src="{{ asset('src/plugins/sweetalert2/sweetalert2.all.js')}}"></script>
+	<script src="{{ asset('src/plugins/sweetalert2/sweet-alert.init.js')}}"></script>
+
 
 </body>
 
