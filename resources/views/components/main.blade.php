@@ -158,11 +158,15 @@
                 $.ajax({
                     url: '/get-employees-by-status',
                     type: 'GET',
-                    data: { status: status },
+                    data: {
+                        status: status
+                    },
                     success: function(response) {
-                        $('#employeeFilter').empty().append('<option value="">All Employees</option>');
+                        $('#employeeFilter').empty().append(
+                            '<option value="">All Employees</option>');
                         $.each(response, function(id, name) {
-                            $('#employeeFilter').append('<option value="' + id + '">' + name + '</option>');
+                            $('#employeeFilter').append('<option value="' + id + '">' +
+                                name + '</option>');
                         });
                     },
                     error: function(xhr) {
@@ -203,7 +207,9 @@
                 $.ajax({
                     url: '/filter-employees',
                     type: 'GET',
-                    data: { status: 'Active' },
+                    data: {
+                        status: 'Active'
+                    },
                     success: function(response) {
                         updateTable(response);
                     }
@@ -239,7 +245,7 @@
                         '</a>' +
                         '<form action="/employee/' + employee.employee_id + '" method="post">' +
                         '@csrf' +
-                        '@method("DELETE")' +
+                        '@method('DELETE')' +
                         '<button type="submit" class="dropdown-item"><i class="dw dw-delete-3"></i> Delete</button>' +
                         '</form>' +
                         '</div>' +
@@ -250,144 +256,147 @@
                 });
             }
         });
-        </script>
+    </script>
 
 
-<script>
-    $(document).ready(function() {
-        // Load active employees by default
-        loadEmployees(1);
-        $('.month-picker').attr('type', 'month');
+    <script>
+        $(document).ready(function() {
+            // Load active employees by default
+            loadEmployees(1);
+            $('.month-picker').attr('type', 'month');
 
-        $('.month-picker').datepicker({
-        format: "yyyy-mm",
-        viewMode: "months",
-        minViewMode: "months"
-    });
-        // When status changes - update employee dropdown
-        $('#paymentStatusFilter').change(function() {
-            var statusValue = $(this).val();
-            loadEmployees(statusValue);
-        });
+            $('.month-picker').datepicker({
+                format: "yyyy-mm",
+                viewMode: "months",
+                minViewMode: "months"
+            });
+            // When status changes - update employee dropdown
+            $('#paymentStatusFilter').change(function() {
+                var statusValue = $(this).val();
+                loadEmployees(statusValue);
+            });
 
-        // Form submission handler - update table
-        $('#paymentFilterForm').submit(function(e) {
-            e.preventDefault();
-            applyFilters();
-        });
+            // Form submission handler - update table
+            $('#paymentFilterForm').submit(function(e) {
+                e.preventDefault();
+                applyFilters();
+            });
 
-        // Function to load employees
-        function loadEmployees(statusValue) {
-            $.ajax({
-                url: '/filter-payments',
-                type: 'GET',
-                data: {
-                    status: statusValue,
-                    employees_only: true
-                },
-                success: function(response) {
-                    updateEmployeeFilter(response.employees);
-                },
-                error: function(xhr) {
-                    console.log('Error:', xhr.responseText);
+            // Function to load employees
+            function loadEmployees(statusValue) {
+                $.ajax({
+                    url: '/filter-payments',
+                    type: 'GET',
+                    data: {
+                        status: statusValue,
+                        employees_only: true
+                    },
+                    success: function(response) {
+                        updateEmployeeFilter(response.employees);
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
+            }
+
+            // Function to apply filters and update table
+            function applyFilters() {
+                var statusValue = $('#paymentStatusFilter').val();
+                var employeeId = $('#paymentEmployeeFilter').val();
+
+                $.ajax({
+                    url: '/filter-payments',
+                    type: 'GET',
+                    data: {
+                        status: statusValue,
+                        employee_id: employeeId
+                    },
+                    success: function(response) {
+                        updatePaymentTable(response.payments);
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
+            }
+
+            // Update employee filter dropdown
+            function updateEmployeeFilter(employees) {
+                var employeeFilter = $('#paymentEmployeeFilter');
+                employeeFilter.empty().append('<option value="">All Employees</option>');
+
+                $.each(employees, function(id, name) {
+                    employeeFilter.append('<option value="' + id + '">' + name + '</option>');
+                });
+            }
+
+            // Update payment table
+            // Update payment table
+            function updatePaymentTable(payments,total_payments) {
+                var tableBody = $('#filter_payment_table tbody');
+                tableBody.empty();
+
+                if (payments.length === 0) {
+                    tableBody.append('<tr><td colspan="7" class="text-center">No payments found</td></tr>');
+                    return;
                 }
+
+                $.each(payments, function(index, payment) {
+                    var row = '<tr>' +
+                        '<td class="table-plus">' + (index + 1) + '</td>' +
+                        '<td>' + payment.employee.employee_name + '</td>' +
+                        '<td class="table-plus">Rs:' + payment.payment + '</td>' +
+                        '<td>' + payment.date_time + '</td>' +
+                        '<td>' + (payment.formatted_created_at || payment.created_at) + '</td>' +
+                        '<td class="table-plus">Rs:' + (total_payments[payment.employee.employee_id] || 0) + '</td>' +
+                        '<td><span class="badge ' + (payment.employee.employee_status == 1 ?
+                            'badge-success' : 'badge-danger') + '">' +
+                        (payment.employee.employee_status == 1 ? 'Active' : 'Deactive') + '</span></td>' +
+                        '<td>' +
+                        '<div class="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
+                        '<i class="dw dw-more"></i></a>' +
+                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                        '<a class="dropdown-item" href="/payment/' + payment.payment_id +
+                        '/edit"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/payments/' + payment.payment_id +
+                        '"><i class="dw dw-money"></i> All Payment</a>' +
+                        '</div></div></td></tr>';
+
+                    tableBody.append(row);
+                });
+            }
+
+            // Function to apply filters and update table
+            function applyFilters() {
+                var statusValue = $('#paymentStatusFilter').val();
+                var employeeId = $('#paymentEmployeeFilter').val();
+                var paymentDate = $('#paymentEmployeeDate').val(); // YYYY-MM format date
+
+                $.ajax({
+                    url: '/filter-payments',
+                    type: 'GET',
+                    data: {
+                        status: statusValue,
+                        employee_id: employeeId,
+                        payment_date: paymentDate
+                    },
+                    success: function(response) {
+                        updatePaymentTable(response.payments, response.total_payments);
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
+            }
+            // Reset filter handler
+            $('#resetPaymentFilter').click(function(e) {
+                e.preventDefault();
+                $('#paymentFilterForm')[0].reset();
+                $('#paymentStatusFilter').val('1').trigger('change');
             });
-        }
-
-        // Function to apply filters and update table
-        function applyFilters() {
-            var statusValue = $('#paymentStatusFilter').val();
-            var employeeId = $('#paymentEmployeeFilter').val();
-
-            $.ajax({
-                url: '/filter-payments',
-                type: 'GET',
-                data: {
-                    status: statusValue,
-                    employee_id: employeeId
-                },
-                success: function(response) {
-                    updatePaymentTable(response.payments);
-                },
-                error: function(xhr) {
-                    console.log('Error:', xhr.responseText);
-                }
-            });
-        }
-
-        // Update employee filter dropdown
-        function updateEmployeeFilter(employees) {
-            var employeeFilter = $('#paymentEmployeeFilter');
-            employeeFilter.empty().append('<option value="">All Employees</option>');
-
-            $.each(employees, function(id, name) {
-                employeeFilter.append('<option value="' + id + '">' + name + '</option>');
-            });
-        }
-
-        // Update payment table
-// Update payment table
-function updatePaymentTable(payments) {
-    var tableBody = $('#filter_payment_table tbody');
-    tableBody.empty();
-
-    if (payments.length === 0) {
-        tableBody.append('<tr><td colspan="7" class="text-center">No payments found</td></tr>');
-        return;
-    }
-
-    $.each(payments, function(index, payment) {
-    var row = '<tr>' +
-            '<td class="table-plus">' + (index + 1) + '</td>' +
-            '<td>' + payment.employee.employee_name + '</td>' +
-            '<td class="table-plus">Rs:' + payment.payment + '</td>' +
-            // '<td class="table-plus">Rs:' + (total_payments[payment.employee.employee_id] || 0) + '</td>' +
-            '<td>' + payment.date_time + '</td>' +
-            '<td>' + (payment.formatted_created_at || payment.created_at) + '</td>' +
-            '<td><span class="badge ' + (payment.employee.employee_status == 1 ? 'badge-success' : 'badge-danger') + '">' +
-            (payment.employee.employee_status == 1 ? 'Active' : 'Deactive') + '</span></td>' +
-            '<td>' +
-            '<div class="dropdown">' +
-            '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">' +
-            '<i class="dw dw-more"></i></a>' +
-            '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-            '<a class="dropdown-item" href="/payment/' + payment.payment_id + '/edit"><i class="dw dw-edit2"></i> Edit</a>' +
-            '<a class="dropdown-item" href="/payments/' + payment.payment_id + '"><i class="dw dw-money"></i> All Payment</a>' +
-            '</div></div></td></tr>';
-
-        tableBody.append(row);
-    });
-}
-
-// Function to apply filters and update table
-function applyFilters() {
-    var statusValue = $('#paymentStatusFilter').val();
-    var employeeId = $('#paymentEmployeeFilter').val();
-    var paymentDate = $('#paymentEmployeeDate').val(); // YYYY-MM format में date
-
-    $.ajax({
-        url: '/filter-payments',
-        type: 'GET',
-        data: {
-            status: statusValue,
-            employee_id: employeeId,
-            payment_date: paymentDate
-        },
-        success: function(response) {
-            updatePaymentTable(response.payments);
-        },
-        error: function(xhr) {
-            console.log('Error:', xhr.responseText);
-        }
-    });
-}
-        // Reset filter handler
-        $('#resetPaymentFilter').click(function(e) {
-            e.preventDefault();
-            $('#paymentFilterForm')[0].reset();
-            $('#paymentStatusFilter').val('1').trigger('change');
         });
-    });
     </script>
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
     <script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
@@ -428,8 +437,8 @@ function applyFilters() {
     <!-- Datatable Setting js -->
     <script src="{{ asset('vendors/scripts/datatable-setting.js') }}"></script>
     <!-- add sweet alert js & css in footer -->
-	<script src="{{ asset('src/plugins/sweetalert2/sweetalert2.all.js')}}"></script>
-	<script src="{{ asset('src/plugins/sweetalert2/sweet-alert.init.js')}}"></script>
+    <script src="{{ asset('src/plugins/sweetalert2/sweetalert2.all.js') }}"></script>
+    <script src="{{ asset('src/plugins/sweetalert2/sweet-alert.init.js') }}"></script>
 
 
 </body>

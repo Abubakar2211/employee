@@ -24,7 +24,8 @@ class PaymentController extends Controller
             ->unique('employee_id');
         $total_payments = Payment::whereBetween('date_time',[now()->startOfMonth(),now()->endOfMonth()])->selectRaw('employee_id, SUM(payment) as total_payment')->groupBy('employee_id')->pluck('total_payment','employee_id');
         $allStatus = ['Active', 'Deactive', 'All'];
-        return view('payments', compact('payments', 'allStatus','total_payments'));
+        $current_month = now()->format('F');
+        return view('payments', compact('payments', 'allStatus','total_payments','current_month'));
     }
     public function filterPayments(Request $request)
     {
@@ -73,9 +74,13 @@ class PaymentController extends Controller
                 $payment->formatted_created_at = $payment->created_at->format('Y-m-d H:i:s');
                 return $payment;
             })
-            ->unique('employee_id'); // Get only latest payment per employee
+            ->unique('employee_id'); 
     
         $total_payments = Payment::selectRaw('employee_id,SUM(payment) as total_payment')
+                            ->whereBetween('date_time',[
+                                now()->startOfMonth(),
+                                now()->endOfMonth(),
+                            ])
                           ->groupBy('employee_id')->pluck('total_payment','employee_id');
 
         return response()->json([

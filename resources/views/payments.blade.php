@@ -24,7 +24,7 @@
                             <p class="mb-0">This is payments records</p>
                         </div>
                         <div>
-                            <h4 class="text-blue h4">{{ now()->format('F') }}</h4>
+                            <h4 class="text-blue h4">{{ $current_month }}</h4>
                         </div>
                         <div class="d-flex gap-2">
                             <!-- Add Employee Button -->
