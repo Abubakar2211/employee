@@ -15,7 +15,7 @@
                                 $('#autoCloseAlert').alert('close');
                             }, 3000);
                         </script>
-                    @endif  
+                    @endif
                 <!-- Simple Datatable start -->
                 <div class="card-box mb-30">
                     <div class="d-flex justify-content-between align-items-center pd-20">
@@ -51,8 +51,8 @@
                                         <input class="form-control mb-3" id="paymentEmployeeDate" name="payment_date"
                                             placeholder="Select Month" type="month">
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetPaymentFilter" class="btn btn-secondary">Reset
-                                                Filter</button>
+                                            <a href="{{ route('payment.index') }}" class="btn btn-secondary">Reset
+                                                Filter</a>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>

@@ -52,8 +52,8 @@
 
                                         <!-- Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="reset" id="resetFilter" class="btn btn-secondary">Reset
-                                                Filter</button>
+                                            <a href="{{ route('employee.index') }}" class="btn btn-secondary">Reset
+                                                Filter</a>
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>

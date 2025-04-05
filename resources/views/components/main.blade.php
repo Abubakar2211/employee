@@ -198,23 +198,6 @@
                 });
             });
 
-            // Reset filter handler
-            $('#resetFilter').click(function() {
-                $('#filterForm')[0].reset();
-                $('#employeeFilter').empty().append('<option value="">All Employees</option>');
-
-                // Reload original data
-                $.ajax({
-                    url: '/filter-employees',
-                    type: 'GET',
-                    data: {
-                        status: 'Active'
-                    },
-                    success: function(response) {
-                        updateTable(response);
-                    }
-                });
-            });
 
             function updateTable(employees) {
                 var tbody = $('tbody');
@@ -243,11 +226,6 @@
                         '<a class="dropdown-item" href="/employee/' + employee.employee_id + '/edit">' +
                         '<i class="dw dw-edit2"></i> Edit' +
                         '</a>' +
-                        '<form action="/employee/' + employee.employee_id + '" method="post">' +
-                        '@csrf' +
-                        '@method('DELETE')' +
-                        '<button type="submit" class="dropdown-item"><i class="dw dw-delete-3"></i> Delete</button>' +
-                        '</form>' +
                         '</div>' +
                         '</div></td>' +
                         '</tr>';
@@ -390,12 +368,6 @@
                     }
                 });
             }
-            // Reset filter handler
-            $('#resetPaymentFilter').click(function(e) {
-                e.preventDefault();
-                $('#paymentFilterForm')[0].reset();
-                $('#paymentStatusFilter').val('1').trigger('change');
-            });
         });
     </script>
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
