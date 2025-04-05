@@ -310,8 +310,7 @@
             }
 
             // Update payment table
-            // Update payment table
-            function updatePaymentTable(payments,total_payments) {
+            function updatePaymentTable(payments, total_payments) {
                 var tableBody = $('#filter_payment_table tbody');
                 tableBody.empty();
 
@@ -327,7 +326,8 @@
                         '<td class="table-plus">Rs:' + payment.payment + '</td>' +
                         '<td>' + payment.date_time + '</td>' +
                         '<td>' + (payment.formatted_created_at || payment.created_at) + '</td>' +
-                        '<td class="table-plus">Rs:' + (total_payments[payment.employee.employee_id] || 0) + '</td>' +
+                        '<td class="table-plus">Rs:' + (total_payments[payment.employee.employee_id] || 0) +
+                        '</td>' +
                         '<td><span class="badge ' + (payment.employee.employee_status == 1 ?
                             'badge-success' : 'badge-danger') + '">' +
                         (payment.employee.employee_status == 1 ? 'Active' : 'Deactive') + '</span></td>' +
@@ -362,6 +362,25 @@
                     },
                     success: function(response) {
                         updatePaymentTable(response.payments, response.total_payments);
+
+                        // Simple month display update
+                        if (response.payments.length > 0) {
+                            var dateParts = response.payments[0].date_time.split('-');
+                            $('#paymentMonthDisplay').text(
+                                new Date(dateParts[0], dateParts[1] - 1).toLocaleString('default', {
+                                    month: 'long'
+                                }) +
+                                ' ' + dateParts[0]
+                            );
+                        } else if (paymentDate) {
+                            var dateParts = paymentDate.split('-');
+                            $('#paymentMonthDisplay').text(
+                                new Date(dateParts[0], dateParts[1] - 1).toLocaleString('default', {
+                                    month: 'long'
+                                }) +
+                                ' ' + dateParts[0]
+                            );
+                        }
                     },
                     error: function(xhr) {
                         console.log('Error:', xhr.responseText);
@@ -370,6 +389,7 @@
             }
         });
     </script>
+
     <script src="{{ asset('vendors/scripts/core.js') }}"></script>
     <script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
     <script src="{{ asset('vendors/scripts/process.js') }}"></script>

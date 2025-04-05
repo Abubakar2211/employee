@@ -19,12 +19,12 @@ class PaymentController extends Controller
                 now()->startOfMonth(),
                 now()->endOfMonth(),
             ])
-            ->orderByDesc('payment_id') 
+            ->orderByDesc('payment_id')
             ->get()
             ->unique('employee_id');
         $total_payments = Payment::whereBetween('date_time',[now()->startOfMonth(),now()->endOfMonth()])->selectRaw('employee_id, SUM(payment) as total_payment')->groupBy('employee_id')->pluck('total_payment','employee_id');
         $allStatus = ['Active', 'Deactive', 'All'];
-        $current_month = now()->format('F');
+        $current_month = now()->format('Y-m');
         return view('payments', compact('payments', 'allStatus','total_payments','current_month'));
     }
     public function filterPayments(Request $request)
@@ -32,56 +32,61 @@ class PaymentController extends Controller
         if ($request->has('employees_only')) {
             $query = Employee::select('employee_id', 'employee_name')
                 ->whereHas('payments');
-    
-            // Filter by employee status if provided
-            if ($request->has('status')) {
+
+            if ($request->filled('status')) {
                 $query->where('employee_status', $request->status);
             }
-    
+
             return response()->json([
                 'employees' => $query->pluck('employee_name', 'employee_id'),
                 'payments' => []
             ]);
         }
-    
-        // Normal filtering for table data
-        $status = $request->status; // employee_status (1 for active, 0 for deactive)
+
+        $status = $request->status;
         $employeeId = $request->employee_id;
-        $paymentDate = $request->payment_date; // Date in YYYY-MM format
-    
+        $paymentDate = $request->payment_date; // YYYY-MM format
+
+        // Base query for payments
         $baseQuery = Payment::with(['employee' => function($query) {
                 $query->select('employee_id', 'employee_name', 'employee_status');
             }])
-            ->select('payment_id', 'employee_id', 'payment', 'date_time', 'created_at')
-            ->whereHas('employee', function($q) use ($status) {
-                if ($status !== null) {
-                    $q->where('employee_status', $status);
-                }
+            ->select('payment_id', 'employee_id', 'payment', 'date_time', 'created_at');
+
+        // Apply status filter if provided
+        if ($status !== null && $status !== '') {
+            $baseQuery->whereHas('employee', function($q) use ($status) {
+                $q->where('employee_status', $status);
             });
-    
+        } else {
+            $baseQuery->whereHas('employee');
+        }
+
+        // Apply employee filter if provided
         if ($employeeId) {
             $baseQuery->where('employee_id', $employeeId);
         }
-    
-        if ($paymentDate) {
-            $baseQuery->whereYear('date_time', '=', substr($paymentDate, 0, 4))
-                ->whereMonth('date_time', '=', substr($paymentDate, 5, 2));
-        }
-    
-        $payments = $baseQuery->latest('date_time')
+
+        // Get start and end dates for the selected month
+        $startDate = $paymentDate ? Carbon::parse($paymentDate)->startOfMonth() : now()->startOfMonth();
+        $endDate = $paymentDate ? Carbon::parse($paymentDate)->endOfMonth() : now()->endOfMonth();
+
+        // Get latest payment for each employee in the selected month
+        $payments = $baseQuery->clone()
+            ->whereBetween('date_time', [$startDate, $endDate])
+            ->latest('date_time')
             ->get()
+            ->unique('employee_id')
             ->map(function ($payment) {
                 $payment->formatted_created_at = $payment->created_at->format('Y-m-d H:i:s');
                 return $payment;
-            })
-            ->unique('employee_id'); 
-    
-        $total_payments = Payment::selectRaw('employee_id,SUM(payment) as total_payment')
-                            ->whereBetween('date_time',[
-                                now()->startOfMonth(),
-                                now()->endOfMonth(),
-                            ])
-                          ->groupBy('employee_id')->pluck('total_payment','employee_id');
+            });
+
+        // Get total payments for each employee in the selected month
+        $total_payments = Payment::selectRaw('employee_id, SUM(payment) as total_payment')
+            ->whereBetween('date_time', [$startDate, $endDate])
+            ->groupBy('employee_id')
+            ->pluck('total_payment', 'employee_id');
 
         return response()->json([
             'payments' => $payments,

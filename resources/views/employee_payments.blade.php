@@ -83,10 +83,6 @@
                                                             href="{{ route('payment.edit', $payment->payment_id) }}">
                                                             <i class="dw dw-edit2"></i> Edit
                                                         </a>
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('payments', $payment->payment_id) }}">
-                                                            <i class="dw dw-money"></i> All Payment
-                                                        </a>
                                                 </div>
                                             </td>
                                         </tr>

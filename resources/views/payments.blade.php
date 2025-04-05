@@ -23,8 +23,9 @@
                             <h4 class="text-blue h4">Payments Tables</h4>
                             <p class="mb-0">This is payments records</p>
                         </div>
-                        <div>
-                            <h4 class="text-blue h4">{{ $current_month }}</h4>
+                        <div><h4 class="text-blue h4 check_month_payment" id="paymentMonthDisplay">
+                            {{ \Carbon\Carbon::parse($current_month)->format('F Y') }}
+                        </h4>
                         </div>
                         <div class="d-flex gap-2">
                             <!-- Add Employee Button -->
@@ -48,7 +49,7 @@
                                             <option value="">All Employees</option>
                                         </select>
                                         <label for="payment_date">Payment Month:</label>
-                                        <input class="form-control mb-3" id="paymentEmployeeDate" name="payment_date"
+                                        <input class="form-control mb-3" id="paymentEmployeeDate" value="{{ $current_month }}" name="payment_date"
                                             placeholder="Select Month" type="month">
                                         <div class="d-flex justify-content-between">
                                             <a href="{{ route('payment.index') }}" class="btn btn-secondary">Reset
@@ -114,6 +115,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
