@@ -15,17 +15,20 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = Payment::with('employee')
-            ->whereBetween('date_time',[
+            ->whereHas('employee', function ($query) {
+                $query->where('employee_status', 1);
+            })
+            ->whereBetween('date_time', [
                 now()->startOfMonth(),
                 now()->endOfMonth(),
             ])
             ->orderByDesc('payment_id')
             ->get()
             ->unique('employee_id');
-        $total_payments = Payment::whereBetween('date_time',[now()->startOfMonth(),now()->endOfMonth()])->selectRaw('employee_id, SUM(payment) as total_payment')->groupBy('employee_id')->pluck('total_payment','employee_id');
+        $total_payments = Payment::whereBetween('date_time', [now()->startOfMonth(), now()->endOfMonth()])->selectRaw('employee_id, SUM(payment) as total_payment')->groupBy('employee_id')->pluck('total_payment', 'employee_id');
         $allStatus = ['Active', 'Deactive', 'All'];
         $current_month = now()->format('Y-m');
-        return view('payments', compact('payments', 'allStatus','total_payments','current_month'));
+        return view('payments', compact('payments', 'allStatus', 'total_payments', 'current_month'));
     }
     public function filterPayments(Request $request)
     {
@@ -48,14 +51,16 @@ class PaymentController extends Controller
         $paymentDate = $request->payment_date; // YYYY-MM format
 
         // Base query for payments
-        $baseQuery = Payment::with(['employee' => function($query) {
+        $baseQuery = Payment::with([
+            'employee' => function ($query) {
                 $query->select('employee_id', 'employee_name', 'employee_status');
-            }])
+            }
+        ])
             ->select('payment_id', 'employee_id', 'payment', 'date_time', 'created_at');
 
         // Apply status filter if provided
         if ($status !== null && $status !== '') {
-            $baseQuery->whereHas('employee', function($q) use ($status) {
+            $baseQuery->whereHas('employee', function ($q) use ($status) {
                 $q->where('employee_status', $status);
             });
         } else {
