@@ -320,6 +320,7 @@
                 }
 
                 $.each(payments, function(index, payment) {
+                    var currentMonth = $('#paymentEmployeeDate').val();
                     var row = '<tr>' +
                         '<td class="table-plus">' + (index + 1) + '</td>' +
                         '<td>' + payment.employee.employee_name + '</td>' +
@@ -338,8 +339,8 @@
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
                         '<a class="dropdown-item" href="/payment/' + payment.payment_id +
                         '/edit"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/payments/' + payment.payment_id +
-                        '"><i class="dw dw-money"></i> All Payment</a>' +
+                        '<a class="dropdown-item" href="/payments/' + payment.payment_id + '?month=' +
+                        currentMonth + '"><i class="dw dw-money"></i> All Payment</a>' +
                         '</div></div></td></tr>';
 
                     tableBody.append(row);
