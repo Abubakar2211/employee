@@ -106,7 +106,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        $employees = Employee::where('employee_status', 1)->select('employee_id', 'employee_name')->get();
+        $employees = Employee::where('employee_status', 1)->select('employee_id', 'employee_name','employee_code')->get();
         return view('payment_create', compact('employees'));
     }
 

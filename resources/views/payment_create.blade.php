@@ -20,7 +20,7 @@
                                 <select class="form-control mb-3" name="employee_id" id="employee_id">
                                     <option value="">Select The Employee</option>
                                     @foreach ($employees as $employee)
-                                        <option value="{{ $employee->employee_id }}">{{ $employee->employee_name }}</option>
+                                        <option value="{{ $employee->employee_id }}">{{ $employee->employee_name }} == {{ $employee->employee_code }}</option>
                                     @endforeach
                                 </select>
                             </div>

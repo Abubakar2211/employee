@@ -46,7 +46,7 @@
                                         <select class="form-control mb-3" id="employeeFilter" name="employee_id">
                                             <option value="">All Employees</option>
                                             @foreach ($allEmployees as $id => $name)
-                                                <option value="{{ $id }}">{{ $name }}</option>
+                                                <option value="{{ $id }}">{{ $name }}   </option>
                                             @endforeach
                                         </select>
 
