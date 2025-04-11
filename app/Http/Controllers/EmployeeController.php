@@ -19,10 +19,16 @@ class EmployeeController extends Controller
     {
         $employees = Employee::where('employee_status', 1)->get();
         $allStatus = ['Active', 'Deactive', 'All'];
-        $allEmployees = Employee::where('employee_status', 1)->pluck('employee_name', 'employee_id');
+
+        $allEmployees = Employee::where('employee_status', 1)
+            ->get()
+            ->mapWithKeys(function ($employee) {
+                return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+            });
 
         return view('employees', compact('employees', 'allStatus', 'allEmployees'));
     }
+
 
     public function filterEmployees(Request $request)
     {
@@ -50,15 +56,24 @@ class EmployeeController extends Controller
         $status = $request->input('status');
 
         if ($status === 'all') {
-            $employees = Employee::pluck('employee_name', 'employee_id');
+            $employees = Employee::select('employee_id', 'employee_name', 'employee_code')
+                ->get()
+                ->mapWithKeys(function ($employee) {
+                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                });
         } else {
             $statusValue = $status === 'Active' ? 1 : 0;
             $employees = Employee::where('employee_status', $statusValue)
-                                ->pluck('employee_name', 'employee_id');
+                ->select('employee_id', 'employee_name', 'employee_code')
+                ->get()
+                ->mapWithKeys(function ($employee) {
+                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                });
         }
 
         return response()->json($employees);
     }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -45,9 +45,10 @@
                                         <label for="employeeFilter">Employees Names:</label>
                                         <select class="form-control mb-3" id="employeeFilter" name="employee_id">
                                             <option value="">All Employees</option>
-                                            @foreach ($allEmployees as $id => $name)
-                                                <option value="{{ $id }}">{{ $name }}   </option>
+                                            @foreach ($allEmployees as $id => $displayText)
+                                                <option value="{{ $id }}">{{ $displayText }}</option>
                                             @endforeach
+
                                         </select>
 
                                         <!-- Buttons -->

@@ -33,31 +33,31 @@ class PaymentController extends Controller
     public function filterPayments(Request $request)
     {
         if ($request->has('employees_only')) {
-            $query = Employee::select('employee_id', 'employee_name')
+            $query = Employee::select('employee_id', 'employee_name', 'employee_code')
                 ->whereHas('payments');
-    
+
             if ($request->filled('status')) {
                 $query->where('employee_status', $request->status);
             }
-    
+
             return response()->json([
-                'employees' => $query->pluck('employee_name', 'employee_id'),
+                'employees' => $query->get()->mapWithKeys(function ($employee) {
+                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                }),
                 'payments' => []
             ]);
         }
-    
+
         $status = $request->status;
         $employeeId = $request->employee_id;
-        $paymentDate = $request->payment_date; // YYYY-MM format
-    
-        // Base query for payments
+        $paymentDate = $request->payment_date;
+
         $baseQuery = Payment::with([
             'employee' => function ($query) {
-                $query->select('employee_id', 'employee_name', 'employee_status');
+                $query->select('employee_id', 'employee_name', 'employee_code', 'employee_status');
             }
         ]);
-    
-        // Apply status filter if provided
+
         if ($status !== null && $status !== '') {
             $baseQuery->whereHas('employee', function ($q) use ($status) {
                 $q->where('employee_status', $status);
@@ -65,23 +65,19 @@ class PaymentController extends Controller
         } else {
             $baseQuery->whereHas('employee');
         }
-    
-        // Apply employee filter if provided
+
         if ($employeeId) {
             $baseQuery->where('employee_id', $employeeId);
         }
-    
-        // Get start and end dates for the selected month
+
         $startDate = $paymentDate ? Carbon::parse($paymentDate)->startOfMonth() : now()->startOfMonth();
         $endDate = $paymentDate ? Carbon::parse($paymentDate)->endOfMonth() : now()->endOfMonth();
-    
-        // First get the latest payment_id for each employee in the time period
+
         $latestPaymentIds = Payment::selectRaw('MAX(payment_id) as latest_payment_id')
             ->whereBetween('date_time', [$startDate, $endDate])
             ->groupBy('employee_id')
             ->pluck('latest_payment_id');
-    
-        // Now get the full payment records for these IDs
+
         $payments = $baseQuery->whereIn('payment_id', $latestPaymentIds)
             ->orderByDesc('payment_id')
             ->get()
@@ -89,18 +85,18 @@ class PaymentController extends Controller
                 $payment->formatted_created_at = $payment->created_at->format('Y-m-d H:i:s');
                 return $payment;
             });
-    
-        // Get total payments for each employee in the selected month
+
         $total_payments = Payment::selectRaw('employee_id, SUM(payment) as total_payment')
             ->whereBetween('date_time', [$startDate, $endDate])
             ->groupBy('employee_id')
             ->pluck('total_payment', 'employee_id');
-    
+
         return response()->json([
             'payments' => $payments,
             'total_payments' => $total_payments
         ]);
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -175,9 +171,9 @@ class PaymentController extends Controller
     public function payments($id)
     {
         $payment = Payment::with('employee')->findOrFail($id);
-        
+
         $month = request()->query('month', now()->format('Y-m'));
-        
+
         $payments = Payment::where('employee_id', $payment->employee_id)
             ->whereBetween('date_time', [
                 Carbon::parse($month)->startOfMonth(),
@@ -185,7 +181,7 @@ class PaymentController extends Controller
             ])
             ->orderByDesc('date_time')
             ->get();
-        
+
         return view('employee_payments', compact('payments', 'payment'));
     }
 

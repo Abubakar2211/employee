@@ -162,13 +162,12 @@
                         status: status
                     },
                     success: function(response) {
-                        $('#employeeFilter').empty().append(
-                            '<option value="">All Employees</option>');
-                        $.each(response, function(id, name) {
-                            $('#employeeFilter').append('<option value="' + id + '">' +
-                                name + '</option>');
-                        });
-                    },
+    $('#employeeFilter').empty().append('<option value="">All Employees</option>');
+    $.each(response, function(id, displayText) {
+        $('#employeeFilter').append('<option value="' + id + '">' + displayText + '</option>');
+    });
+},
+
                     error: function(xhr) {
                         console.log('Error:', xhr.responseText);
                     }
@@ -304,10 +303,11 @@
                 var employeeFilter = $('#paymentEmployeeFilter');
                 employeeFilter.empty().append('<option value="">All Employees</option>');
 
-                $.each(employees, function(id, name) {
-                    employeeFilter.append('<option value="' + id + '">' + name + '</option>');
+                $.each(employees, function(id, name_code) {
+                    employeeFilter.append('<option value="' + id + '">' + name_code + '</option>');
                 });
             }
+
 
             // Update payment table
             function updatePaymentTable(payments, total_payments) {
