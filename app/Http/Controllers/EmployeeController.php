@@ -23,7 +23,7 @@ class EmployeeController extends Controller
         $allEmployees = Employee::where('employee_status', 1)
             ->get()
             ->mapWithKeys(function ($employee) {
-                return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_name];
             });
 
         return view('employees', compact('employees', 'allStatus', 'allEmployees'));
@@ -59,7 +59,7 @@ class EmployeeController extends Controller
             $employees = Employee::select('employee_id', 'employee_name', 'employee_code')
                 ->get()
                 ->mapWithKeys(function ($employee) {
-                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                    return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_name];
                 });
         } else {
             $statusValue = $status === 'Active' ? 1 : 0;
@@ -67,7 +67,7 @@ class EmployeeController extends Controller
                 ->select('employee_id', 'employee_name', 'employee_code')
                 ->get()
                 ->mapWithKeys(function ($employee) {
-                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                    return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_code];
                 });
         }
 

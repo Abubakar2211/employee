@@ -324,6 +324,7 @@
                     var row = '<tr>' +
                         '<td class="table-plus">' + (index + 1) + '</td>' +
                         '<td>' + payment.employee.employee_name + '</td>' +
+                        '<td>' + payment.employee.employee_code + '</td>' +
                         '<td class="table-plus">Rs:' + payment.payment + '</td>' +
                         '<td>' + payment.date_time + '</td>' +
                         '<td>' + (payment.formatted_created_at || payment.created_at) + '</td>' +

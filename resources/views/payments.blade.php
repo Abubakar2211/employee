@@ -69,6 +69,7 @@
                                     <tr>
                                         <th class="table-plus datatable-nosort">S.No</th>
                                         <th>Employee</th>
+                                        <th>Employee Code</th>
                                         <th>Payment</th>
                                         <th>Date</th>
                                         <th>Payment Created</th>
@@ -83,6 +84,7 @@
                                         <tr>
                                             <td class="table-plus">{{ $i++ }}</td>
                                             <td>{{ $payment->employee->employee_name }}</td>
+                                            <td>{{ $payment->employee->employee_code }}</td>
                                             <td class="table-plus">Rs: {{ $payment->payment }}</td>
                                             <td>{{ $payment->date_time }}</td>
                                             <td>{{ $payment->created_at }}</td>
