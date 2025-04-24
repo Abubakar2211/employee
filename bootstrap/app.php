@@ -4,6 +4,7 @@ use App\Http\Middleware\CheckEmployee;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\PreventBackHistory;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,8 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'checkEmployee' => CheckEmployee::class
+            'checkEmployee' => CheckEmployee::class,
+            'preventBackHistory' => PreventBackHistory::class
         ]);
+        $middleware->append(PreventBackHistory::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

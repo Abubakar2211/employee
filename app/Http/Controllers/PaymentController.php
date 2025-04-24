@@ -42,7 +42,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'employees' => $query->get()->mapWithKeys(function ($employee) {
-                    return [$employee->employee_id => $employee->employee_name . ' === ' . $employee->employee_code];
+                    return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_name];
                 }),
                 'payments' => []
             ]);
