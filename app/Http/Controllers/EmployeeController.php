@@ -67,7 +67,7 @@ class EmployeeController extends Controller
                 ->select('employee_id', 'employee_name', 'employee_code')
                 ->get()
                 ->mapWithKeys(function ($employee) {
-                    return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_code];
+                    return [$employee->employee_id => $employee->employee_code . ' - ' . $employee->employee_name];
                 });
         }
 

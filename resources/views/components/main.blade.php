@@ -93,7 +93,7 @@
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="dropdown-item">
+                            <button class="dropdown-item" type="submit">
                                 <i class="dw dw-logout"></i> Log Out
                             </button>
                         </form>
@@ -162,11 +162,11 @@
                         status: status
                     },
                     success: function(response) {
-    $('#employeeFilter').empty().append('<option value="">All Employees</option>');
-    $.each(response, function(id, displayText) {
-        $('#employeeFilter').append('<option value="' + id + '">' + displayText + '</option>');
-    });
-},
+                        $('#employeeFilter').empty().append('<option value="">All Employees</option>');
+                        $.each(response, function(id, displayText) {
+                            $('#employeeFilter').append('<option value="' + id + '">' + displayText + '</option>');
+                        });
+                    },
 
                     error: function(xhr) {
                         console.log('Error:', xhr.responseText);
