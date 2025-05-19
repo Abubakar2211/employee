@@ -20,3 +20,9 @@ Route::middleware(['checkEmployee'])->group(function () {
     Route::get('/filter-employees', [EmployeeController::class, 'filterEmployees']);
     Route::get('/payments/{id}',[PaymentController::class,'payments'])->name('payments');
 });
+
+Route::get('/clear-all-cache', [EmployeeController::class , 'clear_all_cache']);
+Route::get('/clear-all-config', [EmployeeController::class , 'clear_all_config']);
+Route::get('/clear-all-route', [EmployeeController::class , 'clear_all_route']);
+Route::get('/clear-all-view', [EmployeeController::class , 'clear_all_view']);
+Route::get('/truncate-migration', [EmployeeController::class , 'truncate_migration']);
